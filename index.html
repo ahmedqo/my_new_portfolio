@@ -411,8 +411,8 @@
                                 </span>
                             </div>
                         </section>
-                        <section class="w-full flex flex-col md:flex-row justify-between gap-10 md:gap-16 lg:gap-24">
-                            <div class="shad w-full md:flex-1 order-2 md:order-1 flex flex-col gap-4">
+                        <section class="w-full flex flex-col md:flex-row justify-between items-center gap-10 md:gap-16 lg:gap-20">
+                            <div class="shad w-full md:flex-1 order-2 md:order-1 flex flex-col gap-4 lg:gap-6">
                                 {{ #each services as service }}
                                     <div data-aos-offset="0" data-aos-delay="100" data-aos="zoom-in-up" class="hov {{ #if dark }} bg-gray-800 {{ #else }} bg-gray-200 {{ #/if }} rounded-xl p-6 lg:p-10 flex items-center justify-between gap-4">
                                         <div class="flex flex-col gap-2">
@@ -429,11 +429,13 @@
                                     </div>
                                 {{ #/each }}
                             </div>
-                            <div class="w-full md:flex-1 order-1 md:order-2 flex flex-col gap-2 md:gap-8">
-                                <h1 data-aos-offset="0" data-aos="slide-right" class="text-lg text-gray-500">Introduce</h1>
+                            <div class="w-full md:flex-1 order-1 md:order-2 flex flex-col gap-4 md:gap-8">
+                                <h1 data-aos-offset="0" data-aos="slide-right" class="text-lg text-gray-500 -mb-4">Introduce</h1>
                                 <h3 data-aos-offset="0" data-aos="slide-left" class="text-4xl lg:text-6xl mb-4">Hello! I’m Ahmed Qoreichi</h3>
                                 <p data-aos-offset="0" data-aos="slide-down" class="text-xl text-gray-500">
-                                    A full-stack developer based in Morocco, with over 5 years of experience in the domain and over 25 projects done.
+                                    As a full-stack developers, we have expertise in both front-end and back-end web development. 
+                                    We possess a broad range of programming skills, including proficiency in multiple programming languages, frameworks, and libraries. 
+                                    We are skilled in developing web applications from start to finish, including designing and implementing user interfaces, developing server-side logic, and building and maintaining databases.
                                 </p>
                                 <div>
                                     <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="font-semibold text-xl text-purple-500 underline">
@@ -471,7 +473,7 @@
                     <div class="flex flex-col md:flex-row justify-between gap-8 md:gap-0 items-center">
                         <div class="w-full md:w-1/2 flex flex-col gap-4">
                             <p data-aos-offset="0" data-aos="slide-right" class="text-bold text-2xl lg:text-5xl">
-                                Let’s make somthing amazing together
+                                Let’s make somthing amazing together.
                             </p>
                             <p data-aos-offset="0" data-aos="slide-up" class="text-bold text-2xl lg:text-5xl">
                                 Start by <a href="mailto:{{ info.email }}" class="text-purple-500 underline">saying hi</a>
