@@ -1,0 +1,21 @@
+{
+    "projects": [{
+            "src": "/assets/image/pro_1.png",
+            "alt": "king food"
+        },
+        {
+            "src": "/assets/image/pro_2.png",
+            "alt": "the cut kw",
+            "web": "https://thecutkw.com/"
+        },
+        {
+            "src": "/assets/image/pro_3.png",
+            "alt": "medicalib"
+        },
+        {
+            "src": "/assets/image/pro_4.png",
+            "alt": "promed planet",
+            "web": "https://promedplanet.com/"
+        }
+    ]
+}
