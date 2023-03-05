@@ -264,7 +264,7 @@
                             </div>
                         </section>
                         <section class="w-full grid grid-rows-1 grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center">
-                            <div class="shad w-full md:flex-1 order-2 md:order-1 flex flex-col gap-4 lg:gap-6">
+                            <div class="shad w-full order-2 md:order-1 flex flex-col gap-4 lg:gap-6">
                                 {{ #each services as service }}
                                     <div data-aos-offset="0" data-aos-delay="100" data-aos="zoom-in-up" class="hov {{ #if dark }} bg-gray-800 {{ #else }} bg-gray-200 {{ #/if }} rounded-xl p-6 lg:p-10 flex items-center justify-between gap-4">
                                         <div class="flex flex-col gap-2">
@@ -281,19 +281,17 @@
                                     </div>
                                 {{ #/each }}
                             </div>
-                            <div class="w-full md:flex-1 order-1 md:order-2 flex flex-col gap-4 md:gap-8">
-                                <h1 data-aos-offset="0" data-aos="slide-right" class="text-lg text-gray-500 -mb-4">Introduce</h1>
-                                <h3 data-aos-offset="0" data-aos="slide-left" class="text-4xl lg:text-6xl mb-4">Hello! I’m Ahmed Qoreichi</h3>
+                            <div class="w-full order-1 md:order-2 flex flex-col gap-4 md:gap-8">
+                                <h1 data-aos-offset="0" data-aos="slide-right" class="text-lg text-gray-500">Introduce</h1>
+                                <h3 data-aos-offset="0" data-aos="slide-left" class="text-4xl lg:text-6xl -mt-4 md:-mt-6">Hello! I’m Ahmed Qoreichi</h3>
                                 <p data-aos-offset="0" data-aos="slide-down" class="text-xl text-gray-500">
                                     As a full-stack developers, we have expertise in both front-end and back-end web development. 
                                     We possess a broad range of programming skills, including proficiency in multiple programming languages, frameworks, and libraries. 
                                     We are skilled in developing web applications from start to finish, including designing and implementing user interfaces, developing server-side logic, and building and maintaining databases.
                                 </p>
-                                <div>
-                                    <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="font-semibold text-xl text-purple-500 underline">
-                                        DOWNLOAD CV
-                                    </a>
-                                </div>
+                                <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="w-max font-semibold text-xl text-purple-500 border-2 border-purple-500 px-4 py-2 hover:bg-purple-400 hover:text-white focus:bg-purple-400 focus:text-white rounded-lg">
+                                    DOWNLOAD CV
+                                </a>
                             </div>
                         </section>
                         {{ #if @size(projects) }}
@@ -313,8 +311,14 @@
                                     {{ #/each }}
                                 </div>
                                 {{ #if @show-more() }}
-                                    <button @click="{{ loadProjects }}" class="w-max mx-auto rounded-md text-lg text-white bg-purple-500 py-2 px-6 hover:bg-purple-700">
-                                        {{ shrink ? "Less" : "More" }}
+                                    <button @click="{{ loadProjects }}" class="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center mx-auto font-semibold text-xl text-purple-500 border-2 border-purple-500 hover:bg-purple-400 hover:text-white focus:bg-purple-400 focus:text-white rounded-full">
+                                        <svg class="block h-6 w-6 md:h-10 md:w-10 pointer-events-none" fill="currentcolor" viewBox="0 96 960 960">
+                                            {{ #if shrink }}
+                                                <path d="M251 699q-13-13-13.5-32t13.5-32l198-198q5-5 13.5-9t17.5-4q9 0 17.5 4t14.5 9l198 197q13 14 13 32.5T710 698q-14 13-33 13t-32-13L480 533 315 700q-13 13-31.5 12.5T251 699Z"/>
+                                            {{ #else }}
+                                            <path d="M479.889 713q-8.889 0-17.339-3.545Q454.1 705.909 449 699L250 502q-12-13.25-11.5-32.125T251 437.5q15-14.5 33-13t31 13.5l165 165 166-165q12.5-13 31.75-13.5T710 438.429q14 13.428 13 32.5Q722 490 709 502L512 699q-6.167 6.909-14.694 10.455Q488.778 713 479.889 713Z"/>
+                                            {{ #/if }}
+                                        </svg>
                                     </button>
                                 {{ #/if }}
                             </section>

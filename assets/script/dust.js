@@ -1390,12 +1390,12 @@ const Dust = (() => {
                 this.template = template.replace(new RegExp(/url\("(.*)"\)/g), (_, s) => {
                     return `url("${encodeURIComponent(s)}")`;
                 });
-                this.__tree = [];
-                this.__imports = [];
-                this.__frames = [];
-                this.__variables = [];
-                this.__mixins = [];
-                this.__medias = {
+                this.__get("Const").tree = [];
+                this.__get("Const").imports = [];
+                this.__get("Const").frames = [];
+                this.__get("Const").variables = [];
+                this.__get("Const").mixins = [];
+                this.__get("Const").medias = {
                     sm: {
                         break: "min-width:640px",
                         tree: []
@@ -1415,19 +1415,19 @@ const Dust = (() => {
                 }
             }
 
-            __toObject() {
+            __object() {
                 const node = {};
                 let match = null;
                 this.template = this.template.replace(this.__get("Const").commentX, '');
                 while ((match = this.__get("Const").altX.exec(this.template)) != null) {
-                    if (!this.__isEmpty(match[ /*selector*/ 2])) {
+                    if (!this.__empty(match[ /*selector*/ 2])) {
                         const name = match[ /*selector*/ 2].trim();
-                        const newNode = this.__toObject(this.template);
+                        const newNode = this.__object(this.template);
                         newNode["@position"] = String(this.__get("Const").count++);
                         node[name] = newNode;
-                    } else if (!this.__isEmpty(match[ /*end*/ 3])) {
+                    } else if (!this.__empty(match[ /*end*/ 3])) {
                         return node;
-                    } else if (!this.__isEmpty(match[ /*attr*/ 4])) {
+                    } else if (!this.__empty(match[ /*attr*/ 4])) {
                         const line = match[ /*attr*/ 4].trim();
                         const attr = this.__get("Const").lineAttrX.exec(line);
                         if (attr) {
@@ -1440,19 +1440,19 @@ const Dust = (() => {
                 return node;
             }
 
-            __toMixin(csstree) {
+            __mixin(csstree) {
                 var newtree = {};
                 Object.keys(csstree).forEach(key => {
                     if (typeof csstree[key] == "object") {
-                        newtree[key] = this.__toMixin(csstree[key]);
+                        newtree[key] = this.__mixin(csstree[key]);
                     } else {
                         if (key == "@include") {
                             const names = csstree[key].split(",").map(e => e.trim());
                             names.forEach(name => {
-                                const object = this.__mixins.find(e => e.name == name).properties;
+                                const object = this.__get("Const").mixins.find(e => e.name == name).properties;
                                 newtree = {
                                     ...newtree,
-                                    ...this.__toMixin(object)
+                                    ...this.__mixin(object)
                                 };
                             });
                         } else {
@@ -1463,20 +1463,20 @@ const Dust = (() => {
                 return newtree;
             }
 
-            __toVariable(csstree) {
+            __variable(csstree) {
                 Object.keys(csstree).forEach(key => {
                     if (typeof csstree[key] == "object") {
-                        csstree[key] = this.__toVariable(csstree[key]);
+                        csstree[key] = this.__variable(csstree[key]);
                     } else {
                         csstree[key] = csstree[key].replace(/\$([A-za-z0-9_-]+)/g, (_, s) => {
-                            return this.__variables.find(e => e.name == s).value;
+                            return this.__get("Const").variables.find(e => e.name == s).value;
                         });
                     }
                 });
                 return csstree
             }
 
-            __toProperty(csstree, parent, newtree) {
+            __property(csstree, parent, newtree) {
                 const properties = [];
                 Object.keys(csstree).forEach(key => {
                     if (typeof csstree[key] == "object") {
@@ -1490,7 +1490,7 @@ const Dust = (() => {
                         }
                         newtree.push({
                             selector: _,
-                            properties: this.__toProperty(csstree[key], _, newtree)
+                            properties: this.__property(csstree[key], _, newtree)
                         });
                     } else {
                         properties.push({
@@ -1502,18 +1502,18 @@ const Dust = (() => {
                 return properties;
             }
 
-            __toExtract() {
-                const csstree = this.__toObject();
+            __extract() {
+                const csstree = this.__object();
                 Object.keys(csstree).forEach(key => {
                     let found = false;
                     if (key[0] == "$") {
-                        this.__variables.push({
+                        this.__get("Const").variables.push({
                             name: key.slice(1),
                             value: csstree[key],
                         });
                         found = true;
                     } else if (key.slice(1, 6) == "mixin") {
-                        this.__mixins.push({
+                        this.__get("Const").mixins.push({
                             name: key.slice(6).trim(),
                             properties: {
                                 ...csstree[key]
@@ -1521,18 +1521,18 @@ const Dust = (() => {
                         });
                         found = true;
                     } else if (key.slice(1, 7) == "import") {
-                        this.__imports.push(decodeURIComponent(csstree[key]));
+                        this.__get("Const").imports.push(decodeURIComponent(csstree[key]));
                         found = true;
                     }
                     if (found)
                         delete csstree[key];
                 });
-                this.__tree = this.__toVariable(this.__toMixin(csstree));
+                this.__get("Const").tree = this.__variable(this.__mixin(csstree));
             }
 
-            __toClean() {
+            __clean() {
                 const position = [];
-                this.__tree = this.__tree.sort((a, b) => {
+                this.__get("Const").tree = this.__get("Const").tree.sort((a, b) => {
                     const apos = parseInt(a.properties.find(e => e.name == "@position").value);
                     const bpos = parseInt(b.properties.find(e => e.name == "@position").value);
                     return apos - bpos;
@@ -1543,24 +1543,24 @@ const Dust = (() => {
                     return e;
                 }).filter(e => e.properties.length);
 
-                this.__tree.forEach((tree, i) => {
+                this.__get("Const").tree.forEach((tree, i) => {
                     if (tree.selector[0].startsWith("@media.")) {
                         const _ = {},
                             con = tree.selector[0].split(" ")[0].slice(7);
                         _.selector = tree.selector.map(e => e.slice(10));
                         _.properties = tree.properties;
-                        this.__medias[con].tree.push(_);
+                        this.__get("Const").medias[con].tree.push(_);
                         position.push(i);
                     }
                     if (tree.selector[0].startsWith("@frame")) {
                         const name = tree.selector[0].split(" ")[1];
-                        var found = this.__frames.find(e => e.name == name);
+                        var found = this.__get("Const").frames.find(e => e.name == name);
                         if (!found) {
-                            this.__frames.push({
+                            this.__get("Const").frames.push({
                                 name: name,
                                 tree: []
                             });
-                            found = this.__frames[this.__frames.length - 1];
+                            found = this.__get("Const").frames[this.__get("Const").frames.length - 1];
                         }
                         const _ = {};
                         _.selector = tree.selector.map(e => e.slice(7 + name.length).trim());
@@ -1570,28 +1570,28 @@ const Dust = (() => {
                     }
                 });
 
-                this.__tree = this.__tree.filter((_, i) => !position.includes(i));
+                this.__get("Const").tree = this.__get("Const").tree.filter((_, i) => !position.includes(i));
             }
 
-            __toParse() {
-                this.__toExtract();
-                const csstree = this.__tree;
-                this.__tree = [];
+            __parse() {
+                this.__extract();
+                const csstree = this.__get("Const").tree;
+                this.__get("Const").tree = [];
                 Object.keys(csstree).forEach(key => {
                     const selector = key.split(",").map(e => e.trim());
-                    this.__tree.push({
+                    this.__get("Const").tree.push({
                         selector: selector,
-                        properties: this.__toProperty(csstree[key], selector, this.__tree),
+                        properties: this.__property(csstree[key], selector, this.__get("Const").tree),
                     });
                 });
-                this.__toClean();
+                this.__clean();
             }
 
-            __isEmpty(str) {
+            __empty(str) {
                 return typeof str == 'undefined' || str.length == 0 || str == null;
             }
 
-            __toString(object) {
+            __string(object) {
                 var str = `${object.selector.join()}{`;
                 Object.keys(object.properties).forEach(key => {
                     const current = object.properties[key];
@@ -1601,20 +1601,20 @@ const Dust = (() => {
             }
 
             exec() {
-                this.__toParse();
-                const stylesheet = [...this.__imports.map(e => `@import ${e};`)];
-                this.__tree.forEach(obj => {
-                    stylesheet.push(this.__toString(obj));
+                this.__parse();
+                const stylesheet = [...this.__get("Const").imports.map(e => `@import ${e};`)];
+                this.__get("Const").tree.forEach(obj => {
+                    stylesheet.push(this.__string(obj));
                 });
 
-                this.__frames.forEach(obj => {
-                    stylesheet.push(`@keyframes ${obj.name} {${obj.tree.map(e => this.__toString(e)).join("")}}`);
+                this.__get("Const").frames.forEach(obj => {
+                    stylesheet.push(`@keyframes ${obj.name} {${obj.tree.map(e => this.__string(e)).join("")}}`);
                 });
 
-                Object.keys(this.__medias).forEach(key => {
-                    const curr = this.__medias[key];
+                Object.keys(this.__get("Const").medias).forEach(key => {
+                    const curr = this.__get("Const").medias[key];
                     if (curr.tree.length)
-                        stylesheet.push(`@media (${curr.break}) {${curr.tree.map(e => this.__toString(e)).join("")}}`);
+                        stylesheet.push(`@media (${curr.break}) {${curr.tree.map(e => this.__string(e)).join("")}}`);
                 });
 
                 return stylesheet.join("");
@@ -1632,6 +1632,29 @@ const Dust = (() => {
                 static commentX = /\/\*[\s\S]*?\*\//g;
                 static lineAttrX = /([^\:]+):([^\;]*);/;
                 static altX = /(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim;
+                static tree = [];
+                static imports = [];
+                static frames = [];
+                static variables = [];
+                static mixins = [];
+                static medias = {
+                    sm: {
+                        break: "min-width:640px",
+                        tree: []
+                    },
+                    md: {
+                        break: "min-width:768px",
+                        tree: []
+                    },
+                    lg: {
+                        break: "min-width:1024px",
+                        tree: []
+                    },
+                    xl: {
+                        break: "min-width:1280px",
+                        tree: []
+                    },
+                }
             };
         }
 
