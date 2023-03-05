@@ -1377,416 +1377,659 @@ const Dust = (() => {
             document.addEventListener("DOMContentLoaded", fn);
         }
 
-        static Sass = class {
+        // static Sass = class {
+        //     constructor(template) {
+        //         this.template = template;
+        //     }
+
+        //     __parser(str, selector, parent, context) {
+        //         var result = {};
+        //         result.isTree = true;
+        //         result.properties = []; // .hello { font-size: 12px; }
+        //         result._context = parent !== undefined ? parent._context : {}; // Variables
+        //         result._medias = []; // Medias
+        //         result._mixins = parent !== undefined ? parent._mixins : {}; // Variables
+        //         result.parent = parent;
+        //         result.selector = selector;
+
+        //         result.getString = () => {
+        //             return this.__stringifier(result);
+        //         };
+
+        //         var inInlineComment = false;
+        //         var inComment = false;
+        //         var object_open = false;
+        //         var object_bracket_count = 0;
+        //         var curr_block = "";
+        //         var curr_property = "";
+
+        //         for (var i = 0; i < str.length; i += 1) {
+        //             var prevCh = str[i - 1] || "";
+        //             var nextCh = str[i + 1] || "";
+        //             var ch = str[i];
+        //             if (inInlineComment && prevCh === "\n") {
+        //                 inInlineComment = false;
+        //             } else if (!inInlineComment && ch === "/" && nextCh === "/") {
+        //                 inInlineComment = true;
+        //             }
+        //             if (!inInlineComment) {
+        //                 if (!inComment && ch === "/" && nextCh === "*") {
+        //                     inComment = true;
+        //                     curr_property = "";
+        //                 } else if (inComment && prevCh === "*" && ch === "/") {
+        //                     inComment = false;
+        //                     result.properties.push(new(this.__get("Comment"))(curr_property));
+        //                     curr_property = "";
+        //                 } else if (inComment) {
+        //                     curr_property += ch;
+        //                 } else if (ch === ";" && !object_open) {
+        //                     if (this.__get("Include").is(curr_property)) {
+        //                         var propertyName = this.__get("Include").get(curr_property);
+        //                         if (result._mixins[propertyName] !== undefined) {
+        //                             var mixin = result._mixins[propertyName];
+        //                             result.properties.push(this.__parser(mixin, " ", result));
+        //                         }
+        //                     } else if (this.__get("Variable").is(curr_property)) {
+        //                         var variable = new(this.__get("Variable"))(curr_property);
+        //                         if (variable.isGlobal()) {
+        //                             this.__get("Global").add(variable, result);
+        //                         } else {
+        //                             result._context[variable.key] = variable;
+        //                         }
+        //                     } else {
+        //                         result.properties.push(new(this.__get("Property"))(curr_property));
+        //                     }
+        //                     curr_property = "";
+        //                 } else if (ch === "{") {
+        //                     object_bracket_count += 1;
+        //                     object_open = true;
+        //                     if (object_bracket_count === 0) {
+        //                         curr_block = "";
+        //                     } else if (object_bracket_count !== 1) {
+        //                         curr_block += ch;
+        //                     }
+        //                 } else if (ch === "}") {
+        //                     object_bracket_count -= 1;
+        //                     if (object_bracket_count === 0) {
+        //                         if (curr_block.trim() !== "") {
+        //                             var property_name = curr_property.trim();
+        //                             if (this.__get("Mixin").is(property_name)) {
+        //                                 this.__get("Mixin").add(property_name, curr_block, result);
+        //                             } else if (this.__get("Media").is(property_name)) {
+        //                                 this.__get("Media").add(property_name, curr_block, result);
+        //                             } else {
+        //                                 result.properties.push(this.__parser(curr_block, property_name, result));
+        //                             }
+        //                         }
+        //                         curr_block = "";
+        //                         curr_property = "";
+        //                         object_open = false;
+        //                     } else {
+        //                         curr_block += ch;
+        //                     }
+        //                 } else {
+        //                     if (object_open) {
+        //                         curr_block += ch;
+        //                     } else {
+        //                         curr_property += ch;
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         return result;
+        //     }
+
+        //     __stringifier(scssTree) {
+        //         var str = "";
+        //         if (scssTree.properties.length > 0) {
+        //             if (scssTree.selector !== null && scssTree.selector !== undefined && scssTree.selector !== "") {
+        //                 var data = this.__get("Global").loop(false)(scssTree);
+        //                 if (data.length) {
+        //                     var sel = this.__selector(scssTree).replaceAll("@host", "");
+        //                     str += sel + "{";
+        //                     str += data;
+        //                     str += "}";
+        //                 }
+        //             }
+        //         }
+        //         str += this.__get("Global").loop(true)(scssTree);
+        //         if (scssTree._medias.length > 0) {
+        //             for (const m of scssTree._medias) {
+        //                 str += "@media(" + m.condition + "){" + this.__parser(m.block, undefined, scssTree).getString() + "}";
+        //             }
+        //         }
+        //         return str;
+        //     }
+
+        //     __selector(scssTree) {
+        //         var _selector = "";
+        //         if (scssTree.selector !== null && scssTree.selector !== undefined) {
+        //             if (scssTree.parent.selector !== null && scssTree.parent.selector !== undefined) {
+        //                 if (scssTree.selector.includes("&")) {
+        //                     _selector = scssTree.selector
+        //                         .split("&")
+        //                         .map((e) => {
+        //                             if (e.length) {
+        //                                 return this.__selector(scssTree.parent) + e;
+        //                             }
+        //                         })
+        //                         .filter((e) => e !== undefined)
+        //                         .join("");
+        //                 } else {
+        //                     _selector = scssTree.selector
+        //                         .split(",")
+        //                         .map((e) => this.__selector(scssTree.parent) + " " + e)
+        //                         .join(",");
+        //                 }
+        //             } else {
+        //                 _selector = scssTree.selector;
+        //             }
+        //         }
+        //         return _selector.trim();
+        //     }
+
+        //     exec() {
+        //         const code = this.template.replaceAll(/@media.([a-zA-Z]+)/g, (_, s) => {
+        //             return this.__get("Const").MEDIA_ARRAY[s];
+        //         });
+        //         return this.__parser("* {box-sizing:border-box;}" + code).getString();
+        //     }
+
+        //     from(object) {
+        //         var all = "";
+        //         var _loop = (name) => {
+        //             var vals = object[name],
+        //                 t = "",
+        //                 s = "";
+        //             if (typeof vals === "string") {
+        //                 all += Class.__kebab(name) + ":" + vals + ";";
+        //             } else {
+        //                 var _loop2 = (sub) => {
+        //                     var subVals = vals[sub],
+        //                         NAME = Class.__kebab(sub);
+        //                     if ((typeof subVals === "undefined" ? "undefined" : typeof subVals) !== "object") {
+        //                         t += NAME + ":" + (typeof subVals == "number" ? subVals + "px" : subVals) + ";";
+        //                     } else {
+        //                         NAME.split(",").forEach(function($NAME) {
+        //                             var N = $NAME.trim().startsWith("&") ? $NAME.trim().slice(1) : " " + $NAME,
+        //                                 Sn = name + N,
+        //                                 o = {};
+        //                             o[Sn] = subVals;
+        //                             s += this.from(o);
+        //                         });
+        //                     }
+        //                 };
+        //                 for (var sub in vals) {
+        //                     _loop2(sub);
+        //                 }
+        //                 if (t.length > 0) all += name + "{" + t + "}";
+        //                 if (s.length > 0) all += s;
+        //             }
+        //         };
+        //         for (var name in object) {
+        //             _loop(name);
+        //         }
+        //         return all;
+        //     }
+
+        //     custom(object) {
+        //         var Classes = {},
+        //             Styles = {};
+        //         Object.keys(object).forEach((key) => {
+        //             Classes[key] = Class.__uid(10);
+        //             Styles["." + Classes[key]] = object[key];
+        //         });
+        //         return {
+        //             Classes: Classes,
+        //             toString: () => this.from(Styles),
+        //         };
+        //     }
+
+        //     __get(object) {
+        //         return this.constructor[object];
+        //     }
+
+        //     static Variable = class {
+        //         constructor(str) {
+        //             this.isCssProperty = true;
+        //             this.isTree = false;
+        //             this._property = this.parse(str);
+        //             this.key = this._property.key;
+        //             this.value = this._property.value;
+        //             this.global = this.checkIfGlobal();
+        //         }
+
+        //         parse(str) {
+        //             var _property = str.split(":");
+        //             var key = _property[0].trim().slice(1); // Remove $ Sign
+        //             var value = _property.slice(1).join(":").trim();
+        //             return {
+        //                 key: key,
+        //                 value: value,
+        //             };
+        //         }
+
+        //         checkIfGlobal() {
+        //             if (this.value.substring(this.value.length - 7) === "!global") {
+        //                 this.value = this.value.substring(0, this.value.length - 7).trim();
+        //                 return true;
+        //             }
+        //             return false;
+        //         }
+
+        //         getValue() {
+        //             return this.value;
+        //         }
+
+        //         isGlobal() {
+        //             return this.global;
+        //         }
+
+        //         static is(str) {
+        //             return str.trim()[0] === "$";
+        //         }
+        //     };
+
+        //     static Property = class {
+        //         constructor(str) {
+        //             this.isCssProperty = true;
+        //             this.isTree = false;
+        //             this._property = this.parse(str);
+        //             this.key = this._property.key;
+        //             this.value = this._property.value;
+        //         }
+
+        //         parse(str) {
+        //             var _property = str.split(":");
+        //             var key = _property[0].trim();
+        //             var value = _property[1].trim();
+        //             return {
+        //                 key: key,
+        //                 value: value,
+        //             };
+        //         }
+
+        //         getString(indentationLevel, scssTree) {
+        //             const val = this.getValue(this.value, scssTree);
+        //             if (val.length && val !== "null" && val !== "undefined") return this.key + ":" + val + ";";
+        //             return "";
+        //         }
+
+        //         getValue(val, scssTree) {
+        //             if (Class.Sass.Variable.is(val)) {
+        //                 var varName = Class.Sass.Global.getName(val);
+        //                 return Class.Sass.Global.getValue(varName, scssTree);
+        //             }
+        //             return val;
+        //         }
+        //     };
+
+        //     static Comment = class {
+        //         constructor(str) {
+        //             this.isComment = true;
+        //             this.isTree = false;
+        //             var foundEndingStar = false;
+        //             if (str[0] === "*") {
+        //                 str = str.substring(1, str.length);
+        //             }
+        //             if (!foundEndingStar && str[str.length - 1] === "*") {
+        //                 foundEndingStar = true;
+        //                 str = str.substring(0, str.length - 1);
+        //             }
+        //             this.str = str;
+        //         }
+
+        //         getString() {
+        //             return "/*" + this.str + "*/";
+        //         }
+        //     };
+
+        //     static Mixin = class {
+        //         static is(str) {
+        //             return str.trim().slice(0, 6) === "@mixin";
+        //         }
+
+        //         static add(propertyName, block, tree) {
+        //             var parsedPropertyName = this.__get(propertyName);
+        //             tree._mixins[parsedPropertyName] = block;
+        //             return true;
+        //         }
+
+        //         static get(str) {
+        //             return str
+        //                 .replace("@mixin", "")
+        //                 .replace(/\({1}[^/)]*\){1}/g, "")
+        //                 .trim();
+        //         }
+        //     };
+
+        //     static Media = class {
+        //         static is(str) {
+        //             return str.trim().slice(0, 6) === "@media";
+        //         }
+
+        //         static add(propertyName, block, tree) {
+        //             var parsedPropertyName = this.get(propertyName).replace(/\s/g, "");
+        //             tree._medias.push({
+        //                 condition: parsedPropertyName,
+        //                 block: block,
+        //             });
+        //             return true;
+        //         }
+
+        //         static get(str) {
+        //             return str.replace("@media", "").trim().slice(1, -1).trim();
+        //         }
+        //     };
+
+        //     static Include = class {
+        //         static is(str) {
+        //             return str.trim().slice(0, 8) === "@include";
+        //         }
+
+        //         static get(str) {
+        //             return str
+        //                 .replace("@include", "")
+        //                 .replace(/\({1}[^/)]*\){1}/g, "")
+        //                 .trim();
+        //         }
+        //     };
+
+        //     static Global = class {
+        //         static frames = {};
+
+        //         static add(scssVar, tree) {
+        //             if (tree.parent === null || tree.parent === undefined) {
+        //                 tree._context[scssVar.key] = scssVar;
+        //                 return true;
+        //             }
+        //             return this.add(scssVar, tree.parent);
+        //         }
+
+        //         static getName(str) {
+        //             var varName = str.trim();
+        //             if (Class.Sass.Variable.is(varName)) return varName.slice(1);
+        //             return varName;
+        //         }
+
+        //         static getValue(varName, tree) {
+        //             if (tree._context[varName] !== undefined) {
+        //                 return tree._context[varName].getValue();
+        //             }
+        //             if (tree.parent !== null && tree.parent !== undefined) {
+        //                 return this.getValue(varName, tree.parent);
+        //             }
+        //             throw new Error("Variable $" + varName + " not defined");
+        //         }
+
+        //         static loop(isTree) {
+        //             return (scssTree) => {
+        //                 var str = "";
+        //                 for (var ii = 0; ii < scssTree.properties.length; ii += 1) {
+        //                     var _t = scssTree.properties[ii];
+        //                     if (_t.isTree === isTree) {
+        //                         str += _t.getString(0, scssTree).replace(/\$([a-zA-Z0-9_\-.]+)/g, (_, s) => {
+        //                             return this.getValue(s, scssTree);
+        //                         });;
+        //                     }
+        //                 }
+        //                 return str;
+        //             };
+        //         }
+        //     };
+
+        //     static Const = class {
+        //         static MEDIA_ARRAY = {
+        //             sm: "@media(min-width:640px)",
+        //             md: "@media(min-width:768px)",
+        //             lg: "@media(min-width:1024px)",
+        //             xl: "@media(min-width:1280px)",
+        //         };
+        //     };
+        // };
+
+        static Sass = class Sass {
             constructor(template) {
-                this.template = template;
+                this.template = template.replace(new RegExp(/url\("(.*)"\)/g), (_, s) => {
+                    return `url("${encodeURIComponent(s)}")`;
+                });
+                this.__tree = [];
+                this.__imports = [];
+                this.__frames = [];
+                this.__variables = [];
+                this.__mixins = [];
+                this.__medias = {
+                    sm: {
+                        break: "min-width:640px",
+                        tree: []
+                    },
+                    md: {
+                        break: "min-width:768px",
+                        tree: []
+                    },
+                    lg: {
+                        break: "min-width:1024px",
+                        tree: []
+                    },
+                    xl: {
+                        break: "min-width:1280px",
+                        tree: []
+                    },
+                }
+                this.__count = 0;
+                this.__regex = {
+                    selX: /([^\s\;\{\}][^\;\{\}]*)\{/g,
+                    endX: /\}/g,
+                    lineX: /([^\;\{\}]*)\;/g,
+                    commentX: /\/\*[\s\S]*?\*\//g,
+                    lineAttrX: /([^\:]+):([^\;]*);/,
+                    altX: /(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim
+                }
             }
 
-            __parser(str, selector, parent, context) {
-                var result = {};
-                result.isTree = true;
-                result.properties = []; // .hello { font-size: 12px; }
-                result._context = parent !== undefined ? parent._context : {}; // Variables
-                result._medias = []; // Medias
-                result._mixins = parent !== undefined ? parent._mixins : {}; // Variables
-                result.parent = parent;
-                result.selector = selector;
-
-                result.getString = () => {
-                    return this.__stringifier(result);
-                };
-
-                var inInlineComment = false;
-                var inComment = false;
-                var object_open = false;
-                var object_bracket_count = 0;
-                var curr_block = "";
-                var curr_property = "";
-
-                for (var i = 0; i < str.length; i += 1) {
-                    var prevCh = str[i - 1] || "";
-                    var nextCh = str[i + 1] || "";
-                    var ch = str[i];
-                    if (inInlineComment && prevCh === "\n") {
-                        inInlineComment = false;
-                    } else if (!inInlineComment && ch === "/" && nextCh === "/") {
-                        inInlineComment = true;
-                    }
-                    if (!inInlineComment) {
-                        if (!inComment && ch === "/" && nextCh === "*") {
-                            inComment = true;
-                            curr_property = "";
-                        } else if (inComment && prevCh === "*" && ch === "/") {
-                            inComment = false;
-                            result.properties.push(new(this.__get("Comment"))(curr_property));
-                            curr_property = "";
-                        } else if (inComment) {
-                            curr_property += ch;
-                        } else if (ch === ";" && !object_open) {
-                            if (this.__get("Include").is(curr_property)) {
-                                var propertyName = this.__get("Include").get(curr_property);
-                                if (result._mixins[propertyName] !== undefined) {
-                                    var mixin = result._mixins[propertyName];
-                                    result.properties.push(this.__parser(mixin, " ", result));
-                                }
-                            } else if (this.__get("Variable").is(curr_property)) {
-                                var variable = new(this.__get("Variable"))(curr_property);
-                                if (variable.isGlobal()) {
-                                    this.__get("Global").add(variable, result);
-                                } else {
-                                    result._context[variable.key] = variable;
-                                }
-                            } else {
-                                result.properties.push(new(this.__get("Property"))(curr_property));
-                            }
-                            curr_property = "";
-                        } else if (ch === "{") {
-                            object_bracket_count += 1;
-                            object_open = true;
-                            if (object_bracket_count === 0) {
-                                curr_block = "";
-                            } else if (object_bracket_count !== 1) {
-                                curr_block += ch;
-                            }
-                        } else if (ch === "}") {
-                            object_bracket_count -= 1;
-                            if (object_bracket_count === 0) {
-                                if (curr_block.trim() !== "") {
-                                    var property_name = curr_property.trim();
-                                    if (this.__get("Mixin").is(property_name)) {
-                                        this.__get("Mixin").add(property_name, curr_block, result);
-                                    } else if (this.__get("Media").is(property_name)) {
-                                        this.__get("Media").add(property_name, curr_block, result);
-                                    } else {
-                                        result.properties.push(this.__parser(curr_block, property_name, result));
-                                    }
-                                }
-                                curr_block = "";
-                                curr_property = "";
-                                object_open = false;
-                            } else {
-                                curr_block += ch;
-                            }
-                        } else {
-                            if (object_open) {
-                                curr_block += ch;
-                            } else {
-                                curr_property += ch;
-                            }
+            __toObject() {
+                const node = {};
+                let match = null;
+                this.template = this.template.replace(this.__regex.commentX, '');
+                while ((match = this.__regex.altX.exec(this.template)) != null) {
+                    if (!this.__isEmpty(match[ /*selector*/ 2])) {
+                        const name = match[ /*selector*/ 2].trim();
+                        const newNode = this.__toObject(this.template);
+                        newNode["@position"] = String(this.__count++);
+                        node[name] = newNode;
+                    } else if (!this.__isEmpty(match[ /*end*/ 3])) {
+                        return node;
+                    } else if (!this.__isEmpty(match[ /*attr*/ 4])) {
+                        const line = match[ /*attr*/ 4].trim();
+                        const attr = this.__regex.lineAttrX.exec(line);
+                        if (attr) {
+                            const name = attr[1].trim();
+                            const value = attr[2].trim();
+                            node[name] = value;
                         }
                     }
                 }
-                return result;
+                return node;
             }
 
-            __stringifier(scssTree) {
-                var str = "";
-                if (scssTree.properties.length > 0) {
-                    if (scssTree.selector !== null && scssTree.selector !== undefined && scssTree.selector !== "") {
-                        var data = this.__get("Global").loop(false)(scssTree);
-                        if (data.length) {
-                            var sel = this.__selector(scssTree).replaceAll("@host", "");
-                            str += sel + "{";
-                            str += data;
-                            str += "}";
-                        }
-                    }
-                }
-                str += this.__get("Global").loop(true)(scssTree);
-                if (scssTree._medias.length > 0) {
-                    for (const m of scssTree._medias) {
-                        str += "@media(" + m.condition + "){" + this.__parser(m.block, undefined, scssTree).getString() + "}";
-                    }
-                }
-                return str;
-            }
-
-            __selector(scssTree) {
-                var _selector = "";
-                if (scssTree.selector !== null && scssTree.selector !== undefined) {
-                    if (scssTree.parent.selector !== null && scssTree.parent.selector !== undefined) {
-                        if (scssTree.selector.includes("&")) {
-                            _selector = scssTree.selector
-                                .split("&")
-                                .map((e) => {
-                                    if (e.length) {
-                                        return this.__selector(scssTree.parent) + e;
-                                    }
-                                })
-                                .filter((e) => e !== undefined)
-                                .join("");
-                        } else {
-                            _selector = scssTree.selector
-                                .split(",")
-                                .map((e) => this.__selector(scssTree.parent) + " " + e)
-                                .join(",");
-                        }
+            __toMixin(csstree) {
+                var newtree = {};
+                Object.keys(csstree).forEach(key => {
+                    if (typeof csstree[key] == "object") {
+                        newtree[key] = this.__toMixin(csstree[key]);
                     } else {
-                        _selector = scssTree.selector;
+                        if (key == "@include") {
+                            const name = csstree[key];
+                            const object = this.__mixins.find(e => e.name == name).properties;
+                            newtree = {
+                                ...newtree,
+                                ...this.__toMixin(object)
+                            };
+                        } else {
+                            newtree[key] = csstree[key];
+                        }
                     }
-                }
-                return _selector.trim();
+                });
+                return newtree;
+            }
+
+            __toVariable(csstree) {
+                Object.keys(csstree).forEach(key => {
+                    if (typeof csstree[key] == "object") {
+                        csstree[key] = this.__toVariable(csstree[key]);
+                    } else {
+                        csstree[key] = csstree[key].replace(/\$([A-za-z0-9_-]+)/g, (_, s) => {
+                            return this.__variables.find(e => e.name == s).value;
+                        });
+                    }
+                });
+                return csstree
+            }
+
+            __toProperty(csstree, parent, newtree) {
+                const properties = [];
+                Object.keys(csstree).forEach(key => {
+                    if (typeof csstree[key] == "object") {
+                        var _ = [];
+                        const selector = key.split(",").map(e => e.trim());
+                        for (let i = 0; i < parent.length; i++) {
+                            for (let j = 0; j < selector.length; j++) {
+                                const text = parent[i] + (selector[j][0] == "&" ? selector[j].substr(1) : " " + selector[j]);
+                                _.push(text);
+                            }
+                        }
+                        newtree.push({
+                            selector: _,
+                            properties: this.__toProperty(csstree[key], _, newtree)
+                        });
+                    } else {
+                        properties.push({
+                            name: key,
+                            value: csstree[key],
+                        })
+                    }
+                });
+                return properties;
+            }
+
+            __toExtract() {
+                const csstree = this.__toObject();
+                Object.keys(csstree).forEach(key => {
+                    let found = false;
+                    if (key[0] == "$") {
+                        this.__variables.push({
+                            name: key.slice(1),
+                            value: csstree[key],
+                        });
+                        found = true;
+                    } else if (key.slice(1, 6) == "mixin") {
+                        this.__mixins.push({
+                            name: key.slice(6).trim(),
+                            properties: {
+                                ...csstree[key]
+                            }
+                        });
+                        found = true;
+                    } else if (key.slice(1, 7) == "import") {
+                        this.__imports.push(decodeURIComponent(csstree[key]));
+                        found = true;
+                    }
+                    if (found)
+                        delete csstree[key];
+                });
+                this.__tree = this.__toVariable(this.__toMixin(csstree));
+            }
+
+            __toClean() {
+                const position = [];
+                this.__tree = this.__tree.sort((a, b) => {
+                    const apos = parseInt(a.properties.find(e => e.name == "@position").value);
+                    const bpos = parseInt(b.properties.find(e => e.name == "@position").value);
+                    return apos - bpos;
+                }).map(e => {
+                    var position = e.properties.find(e => e.name == "@position");
+                    position = e.properties.indexOf(position);
+                    e.properties.splice(position, 1);
+                    return e;
+                }).filter(e => e.properties.length);
+
+                this.__tree.forEach((tree, i) => {
+                    if (tree.selector[0].startsWith("@media.")) {
+                        const _ = {},
+                            con = tree.selector[0].split(" ")[0].slice(7);
+                        _.selector = tree.selector.map(e => e.slice(10));
+                        _.properties = tree.properties;
+                        this.__medias[con].tree.push(_);
+                        position.push(i);
+                    }
+                    if (tree.selector[0].startsWith("@frame")) {
+                        const name = tree.selector[0].split(" ")[1];
+                        var found = this.__frames.find(e => e.name == name);
+                        if (!found) {
+                            this.__frames.push({
+                                name: name,
+                                tree: []
+                            });
+                            found = this.__frames[this.__frames.length - 1];
+                        }
+                        const _ = {};
+                        _.selector = tree.selector.map(e => e.slice(7 + name.length).trim());
+                        _.properties = tree.properties;
+                        found.tree.push(_);
+                        position.push(i);
+                    }
+                });
+
+                this.__tree = this.__tree.filter((_, i) => !position.includes(i));
+            }
+
+            __toParse() {
+                this.__toExtract();
+                const csstree = this.__tree;
+                this.__tree = [];
+                Object.keys(csstree).forEach(key => {
+                    const selector = key.split(",").map(e => e.trim());
+                    this.__tree.push({
+                        selector: selector,
+                        properties: this.__toProperty(csstree[key], selector, this.__tree),
+                    });
+                });
+                this.__toClean();
+            }
+
+            __isEmpty(str) {
+                return typeof str == 'undefined' || str.length == 0 || str == null;
+            }
+
+            __toString(object) {
+                var str = `${object.selector.join()}{`;
+                Object.keys(object.properties).forEach(key => {
+                    const current = object.properties[key];
+                    str += `${current.name}:${current.value};`;
+                });
+                return str && (str += "}");
             }
 
             exec() {
-                const code = this.template.replaceAll(/@media.([a-zA-Z]+)/g, (_, s) => {
-                    return this.__get("Const").MEDIA_ARRAY[s];
+                this.__toParse();
+                const stylesheet = [...this.__imports.map(e => `@import ${e};`)];
+                this.__tree.forEach(obj => {
+                    stylesheet.push(this.__toString(obj));
                 });
-                return this.__parser("* {box-sizing:border-box;}" + code).getString();
-            }
 
-            from(object) {
-                var all = "";
-                var _loop = (name) => {
-                    var vals = object[name],
-                        t = "",
-                        s = "";
-                    if (typeof vals === "string") {
-                        all += Class.__kebab(name) + ":" + vals + ";";
-                    } else {
-                        var _loop2 = (sub) => {
-                            var subVals = vals[sub],
-                                NAME = Class.__kebab(sub);
-                            if ((typeof subVals === "undefined" ? "undefined" : typeof subVals) !== "object") {
-                                t += NAME + ":" + (typeof subVals == "number" ? subVals + "px" : subVals) + ";";
-                            } else {
-                                NAME.split(",").forEach(function($NAME) {
-                                    var N = $NAME.trim().startsWith("&") ? $NAME.trim().slice(1) : " " + $NAME,
-                                        Sn = name + N,
-                                        o = {};
-                                    o[Sn] = subVals;
-                                    s += this.from(o);
-                                });
-                            }
-                        };
-                        for (var sub in vals) {
-                            _loop2(sub);
-                        }
-                        if (t.length > 0) all += name + "{" + t + "}";
-                        if (s.length > 0) all += s;
-                    }
-                };
-                for (var name in object) {
-                    _loop(name);
-                }
-                return all;
-            }
-
-            custom(object) {
-                var Classes = {},
-                    Styles = {};
-                Object.keys(object).forEach((key) => {
-                    Classes[key] = Class.__uid(10);
-                    Styles["." + Classes[key]] = object[key];
+                this.__frames.forEach(obj => {
+                    stylesheet.push(`@keyframes ${obj.name} {${obj.tree.map(e => this.__toString(e)).join("")}}`);
                 });
-                return {
-                    Classes: Classes,
-                    toString: () => this.from(Styles),
-                };
+
+                Object.keys(this.__medias).forEach(key => {
+                    const curr = this.__medias[key];
+                    if (curr.tree.length)
+                        stylesheet.push(`@media (${curr.break}) {${curr.tree.map(e => this.__toString(e)).join("")}}`);
+                });
+
+                return stylesheet.join("");
             }
-
-            __get(object) {
-                return this.constructor[object];
-            }
-
-            static Variable = class {
-                constructor(str) {
-                    this.isCssProperty = true;
-                    this.isTree = false;
-                    this._property = this.parse(str);
-                    this.key = this._property.key;
-                    this.value = this._property.value;
-                    this.global = this.checkIfGlobal();
-                }
-
-                parse(str) {
-                    var _property = str.split(":");
-                    var key = _property[0].trim().slice(1); // Remove $ Sign
-                    var value = _property.slice(1).join(":").trim();
-                    return {
-                        key: key,
-                        value: value,
-                    };
-                }
-
-                checkIfGlobal() {
-                    if (this.value.substring(this.value.length - 7) === "!global") {
-                        this.value = this.value.substring(0, this.value.length - 7).trim();
-                        return true;
-                    }
-                    return false;
-                }
-
-                getValue() {
-                    return this.value;
-                }
-
-                isGlobal() {
-                    return this.global;
-                }
-
-                static is(str) {
-                    return str.trim()[0] === "$";
-                }
-            };
-
-            static Property = class {
-                constructor(str) {
-                    this.isCssProperty = true;
-                    this.isTree = false;
-                    this._property = this.parse(str);
-                    this.key = this._property.key;
-                    this.value = this._property.value;
-                }
-
-                parse(str) {
-                    var _property = str.split(":");
-                    var key = _property[0].trim();
-                    var value = _property[1].trim();
-                    return {
-                        key: key,
-                        value: value,
-                    };
-                }
-
-                getString(indentationLevel, scssTree) {
-                    const val = this.getValue(this.value, scssTree);
-                    if (val.length && val !== "null" && val !== "undefined") return this.key + ":" + val + ";";
-                    return "";
-                }
-
-                getValue(val, scssTree) {
-                    if (Class.Sass.Variable.is(val)) {
-                        var varName = Class.Sass.Global.getName(val);
-                        return Class.Sass.Global.getValue(varName, scssTree);
-                    }
-                    return val;
-                }
-            };
-
-            static Comment = class {
-                constructor(str) {
-                    this.isComment = true;
-                    this.isTree = false;
-                    var foundEndingStar = false;
-                    if (str[0] === "*") {
-                        str = str.substring(1, str.length);
-                    }
-                    if (!foundEndingStar && str[str.length - 1] === "*") {
-                        foundEndingStar = true;
-                        str = str.substring(0, str.length - 1);
-                    }
-                    this.str = str;
-                }
-
-                getString() {
-                    return "/*" + this.str + "*/";
-                }
-            };
-
-            static Mixin = class {
-                static is(str) {
-                    return str.trim().slice(0, 6) === "@mixin";
-                }
-
-                static add(propertyName, block, tree) {
-                    var parsedPropertyName = this.__get(propertyName);
-                    tree._mixins[parsedPropertyName] = block;
-                    return true;
-                }
-
-                static get(str) {
-                    return str
-                        .replace("@mixin", "")
-                        .replace(/\({1}[^/)]*\){1}/g, "")
-                        .trim();
-                }
-            };
-
-            static Media = class {
-                static is(str) {
-                    return str.trim().slice(0, 6) === "@media";
-                }
-
-                static add(propertyName, block, tree) {
-                    var parsedPropertyName = this.get(propertyName).replace(/\s/g, "");
-                    tree._medias.push({
-                        condition: parsedPropertyName,
-                        block: block,
-                    });
-                    return true;
-                }
-
-                static get(str) {
-                    return str.replace("@media", "").trim().slice(1, -1).trim();
-                }
-            };
-
-            static Include = class {
-                static is(str) {
-                    return str.trim().slice(0, 8) === "@include";
-                }
-
-                static get(str) {
-                    return str
-                        .replace("@include", "")
-                        .replace(/\({1}[^/)]*\){1}/g, "")
-                        .trim();
-                }
-            };
-
-            static Global = class {
-                static frames = {};
-
-                static add(scssVar, tree) {
-                    if (tree.parent === null || tree.parent === undefined) {
-                        tree._context[scssVar.key] = scssVar;
-                        return true;
-                    }
-                    return this.add(scssVar, tree.parent);
-                }
-
-                static getName(str) {
-                    var varName = str.trim();
-                    if (Class.Sass.Variable.is(varName)) return varName.slice(1);
-                    return varName;
-                }
-
-                static getValue(varName, tree) {
-                    if (tree._context[varName] !== undefined) {
-                        return tree._context[varName].getValue();
-                    }
-                    if (tree.parent !== null && tree.parent !== undefined) {
-                        return this.getValue(varName, tree.parent);
-                    }
-                    throw new Error("Variable $" + varName + " not defined");
-                }
-
-                static loop(isTree) {
-                    return (scssTree) => {
-                        var str = "";
-                        for (var ii = 0; ii < scssTree.properties.length; ii += 1) {
-                            var _t = scssTree.properties[ii];
-                            if (_t.isTree === isTree) {
-                                str += _t.getString(0, scssTree).replace(/\$([a-zA-Z0-9_\-.]+)/g, (_, s) => {
-                                    return this.getValue(s, scssTree);
-                                });;
-                            }
-                        }
-                        return str;
-                    };
-                }
-            };
-
-            static Const = class {
-                static MEDIA_ARRAY = {
-                    sm: "@media(min-width:640px)",
-                    md: "@media(min-width:768px)",
-                    lg: "@media(min-width:1024px)",
-                    xl: "@media(min-width:1280px)",
-                };
-            };
-        };
+        }
 
         static Preset = class {
             constructor(str, data = {}, fetch = false) {
