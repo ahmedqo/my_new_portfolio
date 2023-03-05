@@ -44,10 +44,7 @@ Dust.init(async function() {
             }
         ],
         projects: res.projects || [],
-        gotoLink(event) {
-            const {
-                web
-            } = event.target.pocket;
+        gotoLink(web) {
             web && (window.location = web);
         },
         toggleDarkMode() {

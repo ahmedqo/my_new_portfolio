@@ -305,7 +305,7 @@
                                                 data-aos="flip-left"
                                                 class="w-full rounded-lg {{ #if dark }} bg-gray-800 {{ #else }} bg-gray-200 {{ #/if }} overflow-hidden"
                                             >
-                                                <img pocket.web="{{ project.web }}" @click="{{ gotoLink }}" src="{{ project.src }}" alt="{{ project.alt || 'project-' + @loop.round }}" class="block w-full object-cover aspect-square {{ project.web ? 'cursor-pointer' : ''}}" />
+                                                <img @click="{{ () => gotoLink(project.web) }}" src="{{ project.src }}" alt="{{ project.alt || 'project-' + @loop.round }}" class="block w-full object-cover aspect-square {{ project.web ? 'cursor-pointer' : ''}}" />
                                             </div>
                                         {{ #/if }}
                                     {{ #/each }}

@@ -1796,7 +1796,7 @@ const Dust = (() => {
                     ".HELP[fn]=" +
                     $NAME +
                     ".HELP[fn].bind($SELF)};" +
-                    "var $TXT = '', $JSX = [], $EACH = (obj, func) => {if (obj == null) {return obj;}var index = -1;if (Array.isArray(obj)) {const length = obj.length;var count = 1;while (++index < length) {if (func(obj[index], {key: index,round: count,index: count - 1,}) === false) {break;}count++;}}var key = Object.keys(obj);const length = key.length;var count = 1;while (++index < length) {if (func(obj[key[index]], {key: key[index],round: count,index: count - 1,}) === false) {break;}count++;}}, $RANGE = (times, func) => {for (var i = 0; i < times; i++) {func({round: i + 1,index: i,});}};" +
+                    "var $TXT = '', $JSX = [], $EACH = (obj, func) => {if (obj == null) {return obj;}let index = -1;if (Array.isArray(obj)) {const length = obj.length;let count = 1;while (++index < length) {if (func(obj[index], {key: index,round: count,index: count - 1,}) === false) {break;}count++;}}let key = Object.keys(obj);const length = key.length;let count = 1;while (++index < length) {if (func(obj[key[index]], {key: key[index],round: count,index: count - 1,}) === false) {break;}count++;}}, $RANGE = (times, func) => {for (let i = 0; i < times; i++) {func({round: i + 1,index: i,});}};" +
                     " with($SELF || {}) { try {" +
                     str +
                     " } catch(e) { console.error(e); }}return [$TXT.split('{(@>_<@)}'), ...$JSX];}"
