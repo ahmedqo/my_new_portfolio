@@ -12,7 +12,7 @@ Dust.init(async function() {
         return this.projects.length > min;
     });
 
-    App = new Dust(document.querySelector("#code"), document.querySelector("#sass"), {
+    App = new Dust("#code", "#sass", {
         dark: darkMode,
         auto: true,
         shrink: false,

@@ -1260,7 +1260,9 @@ const Dust = (() => {
         constructor(container, style, state) {
             window[$NAME] = Class;
             const self = this;
-            Object.defineProperty(container, "src", {
+            this.style = document.querySelector(style);
+            this.container = document.querySelector(container);
+            Object.defineProperty(this.container, "src", {
                 get() {
                     return this.__src;
                 },
@@ -1276,23 +1278,29 @@ const Dust = (() => {
                     })();
                 },
             });
-            Object.defineProperty(this, "src", {
+            Object.defineProperty(this.style, "src", {
                 get() {
-                    return this.container.src;
+                    return this.__src;
                 },
                 set(value) {
-                    this.container.src = value;
+                    this.innerHTML = "";
+                    if (!value) return undefined;
+                    this.__src = value;
+                    (async() => {
+                        var code = await fetch(this.__src);
+                        self.sass = await code.text();
+                        self.__run();
+                    })();
                 },
             });
             this.state = state;
-            this.style = style;
-            this.container = container;
             this.template = this.container.querySelector("template").innerHTML;
             if (this.container.hasAttribute("src")) {
                 this.src = this.container.getAttribute("src");
             } else {
                 this.style && (this.sass = this.style.textContent);
                 this.container.innerHTML = "";
+                this.style.innerHTML = "";
                 this.exec();
             }
         }
