@@ -1326,13 +1326,13 @@ const Dust = (() => {
             return new Proxy(object, handler);
         }
 
-        __run() {
+        async __run() {
             const html = new(this.__get("Preset"))(this.template, this.state, true);
             if (this.style) {
-                const sass = new(this.__get("Preset"))(this.sass, this.state, true);
-                this.style.textContent = new(this.__get("Sass"))(sass.exec("html")).exec();
+                const sass = await new(this.__get("Preset"))(this.sass, this.state).exec("html");
+                this.style.textContent = new(this.__get("Sass"))(sass).exec();
             }
-            const tree = html.exec();
+            const tree = await html.exec();
             if (tree.children.length) {
                 if (!this.props) this.props = new(this.__get("Maker"))(this.container, tree);
                 this.props.exec(tree);
@@ -1377,418 +1377,7 @@ const Dust = (() => {
             document.addEventListener("DOMContentLoaded", fn);
         }
 
-        // static Sass = class {
-        //     constructor(template) {
-        //         this.template = template;
-        //     }
-
-        //     __parser(str, selector, parent, context) {
-        //         var result = {};
-        //         result.isTree = true;
-        //         result.properties = []; // .hello { font-size: 12px; }
-        //         result._context = parent !== undefined ? parent._context : {}; // Variables
-        //         result._medias = []; // Medias
-        //         result._mixins = parent !== undefined ? parent._mixins : {}; // Variables
-        //         result.parent = parent;
-        //         result.selector = selector;
-
-        //         result.getString = () => {
-        //             return this.__stringifier(result);
-        //         };
-
-        //         var inInlineComment = false;
-        //         var inComment = false;
-        //         var object_open = false;
-        //         var object_bracket_count = 0;
-        //         var curr_block = "";
-        //         var curr_property = "";
-
-        //         for (var i = 0; i < str.length; i += 1) {
-        //             var prevCh = str[i - 1] || "";
-        //             var nextCh = str[i + 1] || "";
-        //             var ch = str[i];
-        //             if (inInlineComment && prevCh === "\n") {
-        //                 inInlineComment = false;
-        //             } else if (!inInlineComment && ch === "/" && nextCh === "/") {
-        //                 inInlineComment = true;
-        //             }
-        //             if (!inInlineComment) {
-        //                 if (!inComment && ch === "/" && nextCh === "*") {
-        //                     inComment = true;
-        //                     curr_property = "";
-        //                 } else if (inComment && prevCh === "*" && ch === "/") {
-        //                     inComment = false;
-        //                     result.properties.push(new(this.__get("Comment"))(curr_property));
-        //                     curr_property = "";
-        //                 } else if (inComment) {
-        //                     curr_property += ch;
-        //                 } else if (ch === ";" && !object_open) {
-        //                     if (this.__get("Include").is(curr_property)) {
-        //                         var propertyName = this.__get("Include").get(curr_property);
-        //                         if (result._mixins[propertyName] !== undefined) {
-        //                             var mixin = result._mixins[propertyName];
-        //                             result.properties.push(this.__parser(mixin, " ", result));
-        //                         }
-        //                     } else if (this.__get("Variable").is(curr_property)) {
-        //                         var variable = new(this.__get("Variable"))(curr_property);
-        //                         if (variable.isGlobal()) {
-        //                             this.__get("Global").add(variable, result);
-        //                         } else {
-        //                             result._context[variable.key] = variable;
-        //                         }
-        //                     } else {
-        //                         result.properties.push(new(this.__get("Property"))(curr_property));
-        //                     }
-        //                     curr_property = "";
-        //                 } else if (ch === "{") {
-        //                     object_bracket_count += 1;
-        //                     object_open = true;
-        //                     if (object_bracket_count === 0) {
-        //                         curr_block = "";
-        //                     } else if (object_bracket_count !== 1) {
-        //                         curr_block += ch;
-        //                     }
-        //                 } else if (ch === "}") {
-        //                     object_bracket_count -= 1;
-        //                     if (object_bracket_count === 0) {
-        //                         if (curr_block.trim() !== "") {
-        //                             var property_name = curr_property.trim();
-        //                             if (this.__get("Mixin").is(property_name)) {
-        //                                 this.__get("Mixin").add(property_name, curr_block, result);
-        //                             } else if (this.__get("Media").is(property_name)) {
-        //                                 this.__get("Media").add(property_name, curr_block, result);
-        //                             } else {
-        //                                 result.properties.push(this.__parser(curr_block, property_name, result));
-        //                             }
-        //                         }
-        //                         curr_block = "";
-        //                         curr_property = "";
-        //                         object_open = false;
-        //                     } else {
-        //                         curr_block += ch;
-        //                     }
-        //                 } else {
-        //                     if (object_open) {
-        //                         curr_block += ch;
-        //                     } else {
-        //                         curr_property += ch;
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //         return result;
-        //     }
-
-        //     __stringifier(scssTree) {
-        //         var str = "";
-        //         if (scssTree.properties.length > 0) {
-        //             if (scssTree.selector !== null && scssTree.selector !== undefined && scssTree.selector !== "") {
-        //                 var data = this.__get("Global").loop(false)(scssTree);
-        //                 if (data.length) {
-        //                     var sel = this.__selector(scssTree).replaceAll("@host", "");
-        //                     str += sel + "{";
-        //                     str += data;
-        //                     str += "}";
-        //                 }
-        //             }
-        //         }
-        //         str += this.__get("Global").loop(true)(scssTree);
-        //         if (scssTree._medias.length > 0) {
-        //             for (const m of scssTree._medias) {
-        //                 str += "@media(" + m.condition + "){" + this.__parser(m.block, undefined, scssTree).getString() + "}";
-        //             }
-        //         }
-        //         return str;
-        //     }
-
-        //     __selector(scssTree) {
-        //         var _selector = "";
-        //         if (scssTree.selector !== null && scssTree.selector !== undefined) {
-        //             if (scssTree.parent.selector !== null && scssTree.parent.selector !== undefined) {
-        //                 if (scssTree.selector.includes("&")) {
-        //                     _selector = scssTree.selector
-        //                         .split("&")
-        //                         .map((e) => {
-        //                             if (e.length) {
-        //                                 return this.__selector(scssTree.parent) + e;
-        //                             }
-        //                         })
-        //                         .filter((e) => e !== undefined)
-        //                         .join("");
-        //                 } else {
-        //                     _selector = scssTree.selector
-        //                         .split(",")
-        //                         .map((e) => this.__selector(scssTree.parent) + " " + e)
-        //                         .join(",");
-        //                 }
-        //             } else {
-        //                 _selector = scssTree.selector;
-        //             }
-        //         }
-        //         return _selector.trim();
-        //     }
-
-        //     exec() {
-        //         const code = this.template.replaceAll(/@media.([a-zA-Z]+)/g, (_, s) => {
-        //             return this.__get("Const").MEDIA_ARRAY[s];
-        //         });
-        //         return this.__parser("* {box-sizing:border-box;}" + code).getString();
-        //     }
-
-        //     from(object) {
-        //         var all = "";
-        //         var _loop = (name) => {
-        //             var vals = object[name],
-        //                 t = "",
-        //                 s = "";
-        //             if (typeof vals === "string") {
-        //                 all += Class.__kebab(name) + ":" + vals + ";";
-        //             } else {
-        //                 var _loop2 = (sub) => {
-        //                     var subVals = vals[sub],
-        //                         NAME = Class.__kebab(sub);
-        //                     if ((typeof subVals === "undefined" ? "undefined" : typeof subVals) !== "object") {
-        //                         t += NAME + ":" + (typeof subVals == "number" ? subVals + "px" : subVals) + ";";
-        //                     } else {
-        //                         NAME.split(",").forEach(function($NAME) {
-        //                             var N = $NAME.trim().startsWith("&") ? $NAME.trim().slice(1) : " " + $NAME,
-        //                                 Sn = name + N,
-        //                                 o = {};
-        //                             o[Sn] = subVals;
-        //                             s += this.from(o);
-        //                         });
-        //                     }
-        //                 };
-        //                 for (var sub in vals) {
-        //                     _loop2(sub);
-        //                 }
-        //                 if (t.length > 0) all += name + "{" + t + "}";
-        //                 if (s.length > 0) all += s;
-        //             }
-        //         };
-        //         for (var name in object) {
-        //             _loop(name);
-        //         }
-        //         return all;
-        //     }
-
-        //     custom(object) {
-        //         var Classes = {},
-        //             Styles = {};
-        //         Object.keys(object).forEach((key) => {
-        //             Classes[key] = Class.__uid(10);
-        //             Styles["." + Classes[key]] = object[key];
-        //         });
-        //         return {
-        //             Classes: Classes,
-        //             toString: () => this.from(Styles),
-        //         };
-        //     }
-
-        //     __get(object) {
-        //         return this.constructor[object];
-        //     }
-
-        //     static Variable = class {
-        //         constructor(str) {
-        //             this.isCssProperty = true;
-        //             this.isTree = false;
-        //             this._property = this.parse(str);
-        //             this.key = this._property.key;
-        //             this.value = this._property.value;
-        //             this.global = this.checkIfGlobal();
-        //         }
-
-        //         parse(str) {
-        //             var _property = str.split(":");
-        //             var key = _property[0].trim().slice(1); // Remove $ Sign
-        //             var value = _property.slice(1).join(":").trim();
-        //             return {
-        //                 key: key,
-        //                 value: value,
-        //             };
-        //         }
-
-        //         checkIfGlobal() {
-        //             if (this.value.substring(this.value.length - 7) === "!global") {
-        //                 this.value = this.value.substring(0, this.value.length - 7).trim();
-        //                 return true;
-        //             }
-        //             return false;
-        //         }
-
-        //         getValue() {
-        //             return this.value;
-        //         }
-
-        //         isGlobal() {
-        //             return this.global;
-        //         }
-
-        //         static is(str) {
-        //             return str.trim()[0] === "$";
-        //         }
-        //     };
-
-        //     static Property = class {
-        //         constructor(str) {
-        //             this.isCssProperty = true;
-        //             this.isTree = false;
-        //             this._property = this.parse(str);
-        //             this.key = this._property.key;
-        //             this.value = this._property.value;
-        //         }
-
-        //         parse(str) {
-        //             var _property = str.split(":");
-        //             var key = _property[0].trim();
-        //             var value = _property[1].trim();
-        //             return {
-        //                 key: key,
-        //                 value: value,
-        //             };
-        //         }
-
-        //         getString(indentationLevel, scssTree) {
-        //             const val = this.getValue(this.value, scssTree);
-        //             if (val.length && val !== "null" && val !== "undefined") return this.key + ":" + val + ";";
-        //             return "";
-        //         }
-
-        //         getValue(val, scssTree) {
-        //             if (Class.Sass.Variable.is(val)) {
-        //                 var varName = Class.Sass.Global.getName(val);
-        //                 return Class.Sass.Global.getValue(varName, scssTree);
-        //             }
-        //             return val;
-        //         }
-        //     };
-
-        //     static Comment = class {
-        //         constructor(str) {
-        //             this.isComment = true;
-        //             this.isTree = false;
-        //             var foundEndingStar = false;
-        //             if (str[0] === "*") {
-        //                 str = str.substring(1, str.length);
-        //             }
-        //             if (!foundEndingStar && str[str.length - 1] === "*") {
-        //                 foundEndingStar = true;
-        //                 str = str.substring(0, str.length - 1);
-        //             }
-        //             this.str = str;
-        //         }
-
-        //         getString() {
-        //             return "/*" + this.str + "*/";
-        //         }
-        //     };
-
-        //     static Mixin = class {
-        //         static is(str) {
-        //             return str.trim().slice(0, 6) === "@mixin";
-        //         }
-
-        //         static add(propertyName, block, tree) {
-        //             var parsedPropertyName = this.__get(propertyName);
-        //             tree._mixins[parsedPropertyName] = block;
-        //             return true;
-        //         }
-
-        //         static get(str) {
-        //             return str
-        //                 .replace("@mixin", "")
-        //                 .replace(/\({1}[^/)]*\){1}/g, "")
-        //                 .trim();
-        //         }
-        //     };
-
-        //     static Media = class {
-        //         static is(str) {
-        //             return str.trim().slice(0, 6) === "@media";
-        //         }
-
-        //         static add(propertyName, block, tree) {
-        //             var parsedPropertyName = this.get(propertyName).replace(/\s/g, "");
-        //             tree._medias.push({
-        //                 condition: parsedPropertyName,
-        //                 block: block,
-        //             });
-        //             return true;
-        //         }
-
-        //         static get(str) {
-        //             return str.replace("@media", "").trim().slice(1, -1).trim();
-        //         }
-        //     };
-
-        //     static Include = class {
-        //         static is(str) {
-        //             return str.trim().slice(0, 8) === "@include";
-        //         }
-
-        //         static get(str) {
-        //             return str
-        //                 .replace("@include", "")
-        //                 .replace(/\({1}[^/)]*\){1}/g, "")
-        //                 .trim();
-        //         }
-        //     };
-
-        //     static Global = class {
-        //         static frames = {};
-
-        //         static add(scssVar, tree) {
-        //             if (tree.parent === null || tree.parent === undefined) {
-        //                 tree._context[scssVar.key] = scssVar;
-        //                 return true;
-        //             }
-        //             return this.add(scssVar, tree.parent);
-        //         }
-
-        //         static getName(str) {
-        //             var varName = str.trim();
-        //             if (Class.Sass.Variable.is(varName)) return varName.slice(1);
-        //             return varName;
-        //         }
-
-        //         static getValue(varName, tree) {
-        //             if (tree._context[varName] !== undefined) {
-        //                 return tree._context[varName].getValue();
-        //             }
-        //             if (tree.parent !== null && tree.parent !== undefined) {
-        //                 return this.getValue(varName, tree.parent);
-        //             }
-        //             throw new Error("Variable $" + varName + " not defined");
-        //         }
-
-        //         static loop(isTree) {
-        //             return (scssTree) => {
-        //                 var str = "";
-        //                 for (var ii = 0; ii < scssTree.properties.length; ii += 1) {
-        //                     var _t = scssTree.properties[ii];
-        //                     if (_t.isTree === isTree) {
-        //                         str += _t.getString(0, scssTree).replace(/\$([a-zA-Z0-9_\-.]+)/g, (_, s) => {
-        //                             return this.getValue(s, scssTree);
-        //                         });;
-        //                     }
-        //                 }
-        //                 return str;
-        //             };
-        //         }
-        //     };
-
-        //     static Const = class {
-        //         static MEDIA_ARRAY = {
-        //             sm: "@media(min-width:640px)",
-        //             md: "@media(min-width:768px)",
-        //             lg: "@media(min-width:1024px)",
-        //             xl: "@media(min-width:1280px)",
-        //         };
-        //     };
-        // };
-
-        static Sass = class Sass {
+        static Sass = class {
             constructor(template) {
                 this.template = template.replace(new RegExp(/url\("(.*)"\)/g), (_, s) => {
                     return `url("${encodeURIComponent(s)}")`;
@@ -1816,32 +1405,23 @@ const Dust = (() => {
                         tree: []
                     },
                 }
-                this.__count = 0;
-                this.__regex = {
-                    selX: /([^\s\;\{\}][^\;\{\}]*)\{/g,
-                    endX: /\}/g,
-                    lineX: /([^\;\{\}]*)\;/g,
-                    commentX: /\/\*[\s\S]*?\*\//g,
-                    lineAttrX: /([^\:]+):([^\;]*);/,
-                    altX: /(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim
-                }
             }
 
             __toObject() {
                 const node = {};
                 let match = null;
-                this.template = this.template.replace(this.__regex.commentX, '');
-                while ((match = this.__regex.altX.exec(this.template)) != null) {
+                this.template = this.template.replace(this.__get("Const").commentX, '');
+                while ((match = this.__get("Const").altX.exec(this.template)) != null) {
                     if (!this.__isEmpty(match[ /*selector*/ 2])) {
                         const name = match[ /*selector*/ 2].trim();
                         const newNode = this.__toObject(this.template);
-                        newNode["@position"] = String(this.__count++);
+                        newNode["@position"] = String(this.__get("Const").count++);
                         node[name] = newNode;
                     } else if (!this.__isEmpty(match[ /*end*/ 3])) {
                         return node;
                     } else if (!this.__isEmpty(match[ /*attr*/ 4])) {
                         const line = match[ /*attr*/ 4].trim();
-                        const attr = this.__regex.lineAttrX.exec(line);
+                        const attr = this.__get("Const").lineAttrX.exec(line);
                         if (attr) {
                             const name = attr[1].trim();
                             const value = attr[2].trim();
@@ -1859,12 +1439,14 @@ const Dust = (() => {
                         newtree[key] = this.__toMixin(csstree[key]);
                     } else {
                         if (key == "@include") {
-                            const name = csstree[key];
-                            const object = this.__mixins.find(e => e.name == name).properties;
-                            newtree = {
-                                ...newtree,
-                                ...this.__toMixin(object)
-                            };
+                            const names = csstree[key].split(",").map(e => e.trim());
+                            names.forEach(name => {
+                                const object = this.__mixins.find(e => e.name == name).properties;
+                                newtree = {
+                                    ...newtree,
+                                    ...this.__toMixin(object)
+                                };
+                            });
                         } else {
                             newtree[key] = csstree[key];
                         }
@@ -2029,17 +1611,27 @@ const Dust = (() => {
 
                 return stylesheet.join("");
             }
+
+            __get(object) {
+                return this.constructor[object];
+            }
+
+            static Const = class {
+                static count = 0;
+                static selX = /([^\s\;\{\}][^\;\{\}]*)\{/g;
+                static endX = /\}/g;
+                static lineX = /([^\;\{\}]*)\;/g;
+                static commentX = /\/\*[\s\S]*?\*\//g;
+                static lineAttrX = /([^\:]+):([^\;]*);/;
+                static altX = /(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim;
+            };
         }
 
         static Preset = class {
             constructor(str, data = {}, fetch = false) {
-                this.template = str;
+                this.template = str.replace(this.__get("Const").COMMENT_REG, "");
                 this.data = data;
                 this.fetch = fetch;
-                if (fetch)
-                    (async() => {
-                        this.template = await this.__include(str);
-                    })();
             }
 
             __clean(str) {
@@ -2049,7 +1641,7 @@ const Dust = (() => {
                 str = str.replace(/&#39;/g, "'");
                 str = str.replace(/&amp;/g, "&");
                 str = str.replace(/\n/g, "");
-                str = str.replace(/\s\s+/g, "");
+                str = str.replace(/\s+/g, " ");
                 return str.trim();
             }
 
@@ -2099,7 +1691,7 @@ const Dust = (() => {
                                 return "}";
                         }
                     })
-                    .filter((str) => str.length > 0);
+                    .filter((str) => str && str.length > 0);
             }
 
             __place(str) {
@@ -2160,7 +1752,9 @@ const Dust = (() => {
                 return code;
             }
 
-            exec(type) {
+            async exec(type) {
+                if (this.fetch)
+                    this.template = await this.__include(this.template);
                 const str = this.__token(this.template);
                 const res = new Function(
                     "",
@@ -2185,53 +1779,32 @@ const Dust = (() => {
                 return new Class.Jsx(...res).exec();;
             }
 
-            ts() {
-                const str = this.__token(this.template);
-                const res = new Function(
-                    "",
-                    "return function($SELF) { for(const fn in " +
-                    $NAME +
-                    ".HELP){" +
-                    $NAME +
-                    ".HELP[fn]=" +
-                    $NAME +
-                    ".HELP[fn].bind($SELF)};" +
-                    "var $TXT = '', $JSX = [], $EACH = (obj, func) => {if (obj == null) {return obj;}var index = -1;if (Array.isArray(obj)) {const length = obj.length;var count = 1;while (++index < length) {if (func(obj[index], {key: index,round: count,index: count - 1,}) === false) {break;}count++;}}var key = Object.keys(obj);const length = key.length;var count = 1;while (++index < length) {if (func(obj[key[index]], {key: key[index],round: count,index: count - 1,}) === false) {break;}count++;}}, $RANGE = (times, func) => {for (var i = 0; i < times; i++) {func({round: i + 1,index: i,});}};" +
-                    " with($SELF || {}) { try {" +
-                    str +
-                    " } catch(e) { console.error(e); }}return [$TXT.split('{(@>_<@)}'), ...$JSX];}"
-                )()(this.data);
-                return res;
-            }
-
             __get(object) {
                 return this.constructor[object];
             }
 
             async __fetch(path) {
                 path = path.startsWith("/") ? path.slice(1) : path;
-                path = "/views/" + path.replaceAll(".", "/") + ".axe.html";
+                path = "/views/" + path.replaceAll(".", "/") + ".dust.html";
                 if (!Class.MEMO[path]) {
                     const r = await fetch(path);
-                    Class.MEMO[path] = r.status === 200 ? await r.text() : "";
+                    Class.MEMO[path] = r.status === 200 ? (await r.text()) : "";
                 }
                 return Class.MEMO[path];
             }
 
             async __include(code) {
-                var found,
-                    cursor,
-                    _code = code,
-                    matchs = [];
-                while ((found = this.__get("Const").INCLUDE_REG.exec(_code))) {
-                    matchs.push({
-                        hold: found[0],
-                        path: found[1],
+                code = code.replace(this.__get("Const").COMMENT_REG, "");
+                const matches = [];
+                code = code.replace(/{{\s*#import\s+['|"|`](.*?)['|"|`]\s*}}/g, (_, path) => {
+                    const hold = "___import__placement__code__" + (this.__get("Const").count++) + "___"
+                    matches.push({
+                        path,
+                        hold
                     });
-                    cursor = found.index + found[0].length;
-                    _code = _code.slice(cursor);
-                }
-                for (var match of matchs) {
+                    return hold;
+                });
+                for (var match of matches) {
                     var _code = await this.__fetch(match.path);
                     code = code.replace(match.hold, this.__clean(_code));
                     code = await this.__include(code);
@@ -2240,11 +1813,11 @@ const Dust = (() => {
             }
 
             static Const = class {
-                static INCLUDE_REG = /{{\s*@include\s+['|"|`](.*?)['|"|`]\s*}}/g;
-                static COMMENT_REG = /{{!--(.*?)--}}/g;
-                static HTMLVAR_REG = /@html\((.+)\)/g;
+                static IMPORTS_REG = /{{\s*#import\s+['|"|`](.*?)['|"|`]\s*}}/g;
+                static COMMENT_REG = /{{!--(.*?)--}}/gms;
                 static OPEN_TAG = "{{";
                 static CLSE_TAG = "}}";
+                static count = 0;
             };
         };
 
