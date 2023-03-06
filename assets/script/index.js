@@ -12,6 +12,15 @@ Dust.init(async function() {
         return this.projects.length > min;
     });
 
+    Dust.update(() => {
+        AOS.init();
+    });
+
+    Dust.start(() => {
+        requestAnimationFrame(repeatOften);
+        AOS.init();
+    });
+
     App = new Dust("#code", "#sass", {
         dark: darkMode,
         auto: true,
@@ -57,10 +66,6 @@ Dust.init(async function() {
         },
     });
 
-    App.update = () => {
-        AOS.init();
-    }
-
     function repeatOften() {
         const time = new Date().getHours();
         if (time <= 6 || time >= 19) darkMode = true;
@@ -68,7 +73,4 @@ Dust.init(async function() {
         if (App.state.dark !== darkMode && App.state.auto) App.state.dark = darkMode;
         requestAnimationFrame(repeatOften);
     }
-
-    requestAnimationFrame(repeatOften);
-    AOS.init();
 });

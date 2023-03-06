@@ -131,10 +131,10 @@ const Dust = (() => {
         },
     };
     return class Class {
-        static CONT = false;
-        static MEMO = [];
-        static REFS = {};
-        static HELP = {
+        static __CONT = false;
+        static __MEMO = [];
+        static __REFS = {};
+        static __HELP = {
             capitalize: function(str) {
                 return (
                     (typeof str === "string" &&
@@ -1252,14 +1252,17 @@ const Dust = (() => {
                 return (typeof str === "string" && str[0].toLowerCase() + str.slice(1)) || null;
             },
         };
+        static __STRT = [];
+        static __UPDT = [];
 
         get refs() {
-            return this.__get("REFS");
+            return this.__get("__REFS");
         }
 
         constructor(container, style, state) {
             window[$NAME] = Class;
             const self = this;
+            this.state = state;
             this.style = document.querySelector(style);
             this.container = document.querySelector(container);
             Object.defineProperty(this.container, "src", {
@@ -1293,7 +1296,6 @@ const Dust = (() => {
                     })();
                 },
             });
-            this.state = state;
             this.template = this.container.querySelector("template").innerHTML;
             if (this.container.hasAttribute("src")) {
                 this.src = this.container.getAttribute("src");
@@ -1344,8 +1346,8 @@ const Dust = (() => {
             if (tree.children.length) {
                 if (!this.props) this.props = new(this.__get("Maker"))(this.container, tree);
                 this.props.exec(tree);
-                this.constructor.CONT = true;
-                this.update();
+                this.constructor.__CONT = true;
+                this.constructor.__exec("__UPDT");
             }
         }
 
@@ -1360,29 +1362,38 @@ const Dust = (() => {
                 }, 0);
             });
             this.__run();
-        }
 
-        update() {}
+            const repeatOften = () => {
+                if (this.constructor.__CONT == true) this.constructor.__exec("__STRT");
+                else requestAnimationFrame(repeatOften);
+            }
+            requestAnimationFrame(repeatOften);
+        }
 
         __get(object) {
             return this.constructor[object];
         }
 
         static Helper(name, fn) {
-            if (["loop", "self", ...Object.keys(Class.HELP)].includes(name)) throw new Error("reserved helper name (" + name + ")");
-            this.HELP[name] = fn;
+            if (["loop", "self", ...Object.keys(Class.__HELP)].includes(name)) throw new Error("reserved helper name (" + name + ")");
+            this.__HELP[name] = fn;
         }
 
         static start(fn) {
-            function repeatOften() {
-                if (this.CONT == true) fn();
-                else requestAnimationFrame(repeatOften);
-            }
-            requestAnimationFrame(repeatOften);
+            this.__STRT.push(fn);
+        }
+
+        static update(fn) {
+            this.__UPDT.push(fn);
         }
 
         static init(fn) {
             document.addEventListener("DOMContentLoaded", fn);
+        }
+
+        static __exec(name) {
+            const current = this[name];
+            for (let fn of current) fn();
         }
 
         static Sass = class {
@@ -1728,8 +1739,8 @@ const Dust = (() => {
             __place(str) {
                 str = str.replaceAll("@loop", "$LOOP");
                 str = str.replaceAll("@self", "$SELF");
-                str = str.replaceAll("@refs", $NAME + ".REFS");
-                str = str.replaceAll(/\@(.*)\((.*)\)/g, (_, s, v) => $NAME + ".HELP[\"" + s + "\"](" + v + ")");
+                str = str.replaceAll("@refs", $NAME + ".__REFS");
+                str = str.replaceAll(/\@(.*)\((.*)\)/g, (_, s, v) => $NAME + ".__HELP[\"" + s + "\"](" + v + ")");
                 str = str.replaceAll(/[.]+\w+/g, (e) => "['" + e.slice(1) + "']");
                 return str;
             }
@@ -1749,7 +1760,7 @@ const Dust = (() => {
                                 var code = str.slice(0, index);
                                 if (["#js"].includes(data.jsx[data.jsx.length - 1])) data.jsx.push("<js:code>" + code);
                                 else data.txt.push(code);
-                                str = str.slice(index + state.length);
+                                str = str.slice(index);
                                 state = this.__get("Const").CLSE_TAG;
                             } else {
                                 str.length && data.txt.push(str);
@@ -1758,8 +1769,8 @@ const Dust = (() => {
                         case this.__get("Const").CLSE_TAG:
                             var index = str.indexOf(this.__get("Const").CLSE_TAG);
                             if (index > -1) {
-                                if (str[index + 2] === this.__get("Const").CLSE_TAG[0]) index = index + 1;
-                                var code = str.slice(0, index).trim();
+                                index = this.__last(str, index);
+                                var code = str.slice(state.length, index).trim();
                                 data.jsx.push(code);
                                 str = str.slice(index + state.length);
                                 state = this.__get("Const").OPEN_TAG;
@@ -1770,6 +1781,12 @@ const Dust = (() => {
                     }
                 }
                 return data;
+            }
+
+            __last(str, index) {
+                if (str[index + 2] === this.__get("Const").CLSE_TAG[0]) index = index + 1;
+                else return index;
+                return this.__last(str, index);
             }
 
             __token(str) {
@@ -1791,11 +1808,11 @@ const Dust = (() => {
                     "",
                     "return function($SELF) { for(const fn in " +
                     $NAME +
-                    ".HELP){" +
+                    ".__HELP){" +
                     $NAME +
-                    ".HELP[fn]=" +
+                    ".__HELP[fn]=" +
                     $NAME +
-                    ".HELP[fn].bind($SELF)};" +
+                    ".__HELP[fn].bind($SELF)};" +
                     "var $TXT = '', $JSX = [], $EACH = (obj, func) => {if (obj == null) {return obj;}let index = -1;if (Array.isArray(obj)) {const length = obj.length;let count = 1;while (++index < length) {if (func(obj[index], {key: index,round: count,index: count - 1,}) === false) {break;}count++;}}let key = Object.keys(obj);const length = key.length;let count = 1;while (++index < length) {if (func(obj[key[index]], {key: key[index],round: count,index: count - 1,}) === false) {break;}count++;}}, $RANGE = (times, func) => {for (let i = 0; i < times; i++) {func({round: i + 1,index: i,});}};" +
                     " with($SELF || {}) { try {" +
                     str +
@@ -1817,11 +1834,11 @@ const Dust = (() => {
             async __fetch(path) {
                 path = path.startsWith("/") ? path.slice(1) : path;
                 path = "/views/" + path.replaceAll(".", "/") + ".dust.html";
-                if (!Class.MEMO[path]) {
+                if (!Class.__MEMO[path]) {
                     const r = await fetch(path);
-                    Class.MEMO[path] = r.status === 200 ? (await r.text()) : "";
+                    Class.__MEMO[path] = r.status === 200 ? (await r.text()) : "";
                 }
-                return Class.MEMO[path];
+                return Class.__MEMO[path];
             }
 
             async __include(code) {
@@ -1998,11 +2015,11 @@ const Dust = (() => {
                         continue;
                     }
                     if (is_r) {
-                        if (Class.REFS[_new[prop]])
-                            Array.isArray(Class.REFS[_new[prop]]) ?
-                            Class.REFS[_new[prop]].push(dom) :
-                            (Class.REFS[_new[prop]] = [Class.REFS[_new[prop]], dom]);
-                        else Class.REFS[_new[prop]] = dom;
+                        if (Class.__REFS[_new[prop]])
+                            Array.isArray(Class.__REFS[_new[prop]]) ?
+                            Class.__REFS[_new[prop]].push(dom) :
+                            (Class.__REFS[_new[prop]] = [Class.__REFS[_new[prop]], dom]);
+                        else Class.__REFS[_new[prop]] = dom;
                         continue;
                     }
                     dom.setAttribute(prop, _new[prop]);
@@ -2079,7 +2096,7 @@ const Dust = (() => {
 
             exec(tree) {
                 tree && (this.tree = tree);
-                Class.REFS = {};
+                Class.__REFS = {};
                 this.instance = this.__run(this.container, this.instance, this.tree);
                 const first = this.container.children[0];
                 if (first.tagName === "TEMPLATE") {
