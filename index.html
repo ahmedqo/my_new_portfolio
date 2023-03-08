@@ -30,12 +30,12 @@
 
         ._pos {
             &-1 {
-                left: 64%;
+                left: 60%;
                 top: 70%;
             }
             &-2 {
-                left: 10%;
-                top: 45%;
+                left: 4%;
+                top: 41%;
             }
             &-3 {
                 left: 80%;
@@ -72,9 +72,14 @@
                 top: -2.5rem !important;
             }
 
-            ._pos-2 {
-                left: 6%;
-                top: 42%;
+            ._pos {
+                &-1 {
+                    left: 64%;
+                }
+                &-2 {
+                    left: 7%;
+                    top: 42%;
+                }
             }
         }
 
@@ -113,7 +118,7 @@
                                     As a full-stack developers, we have expertise in both front-end and back-end web development. 
                                     We are skilled in developing web applications from start to finish, including designing and implementing user interfaces, developing server-side logic, and building and maintaining databases.
                                 </p>
-                                <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="w-max font-semibold text-xl text-purple-500 border-2 border-purple-500 px-4 py-2 hover:bg-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:text-gray-50 rounded-lg mt-4">
+                                <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="w-max font-semibold text-xl px-4 py-2 text-purple-500 border-2 border-purple-500 hover:bg-purple-400 hover:border-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:border-purple-400 focus:text-gray-50 rounded-lg mt-4">
                                     DOWNLOAD CV
                                 </a>
                             </div>
@@ -136,12 +141,12 @@
                                     {{ #/each }}
                                 </div>
                                 {{ #if @show-more() }}
-                                    <button @click="{{ loadProjects }}" class="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center mx-auto font-semibold text-xl text-purple-500 border-2 border-purple-500 hover:bg-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:text-gray-50 rounded-full">
+                                    <button @click="{{ loadProjects }}" class="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center mx-auto font-semibold text-xl text-purple-500 border-2 border-purple-500 hover:bg-purple-400 hover:border-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:border-purple-400 focus:text-gray-50 rounded-full">
                                         <svg class="block h-6 w-6 md:h-10 md:w-10 pointer-events-none" fill="currentcolor" viewBox="0 96 960 960">
                                             {{ #if shrink }}
                                                 <path d="M251 699q-13-13-13.5-32t13.5-32l198-198q5-5 13.5-9t17.5-4q9 0 17.5 4t14.5 9l198 197q13 14 13 32.5T710 698q-14 13-33 13t-32-13L480 533 315 700q-13 13-31.5 12.5T251 699Z"/>
                                             {{ #else }}
-                                            <path d="M479.889 713q-8.889 0-17.339-3.545Q454.1 705.909 449 699L250 502q-12-13.25-11.5-32.125T251 437.5q15-14.5 33-13t31 13.5l165 165 166-165q12.5-13 31.75-13.5T710 438.429q14 13.428 13 32.5Q722 490 709 502L512 699q-6.167 6.909-14.694 10.455Q488.778 713 479.889 713Z"/>
+                                                <path d="M479.889 713q-8.889 0-17.339-3.545Q454.1 705.909 449 699L250 502q-12-13.25-11.5-32.125T251 437.5q15-14.5 33-13t31 13.5l165 165 166-165q12.5-13 31.75-13.5T710 438.429q14 13.428 13 32.5Q722 490 709 502L512 699q-6.167 6.909-14.694 10.455Q488.778 713 479.889 713Z"/>
                                             {{ #/if }}
                                         </svg>
                                     </button>

@@ -2018,7 +2018,8 @@ const Dust = (() => {
                         continue;
                     }
                     if (is_o) {
-                        eval(`dom.${prop} = _new[prop]`);
+                        const _ = prop.split(".").reduce((a, e) => e.length ? a + `["${e}"]` : a, "");
+                        eval(`dom${_} = _new[prop]`);
                         continue;
                     }
                     if (is_r) {

@@ -11,19 +11,24 @@
 
 <body>
     <div id="slider-container" class="rounded-md overflow-hidden w-full lg:w-2/3 h-screen mx-auto">
-        <ul id="slider-list" class="flex w-full flex-col">
+        <ul id="slider-list">
             <li>
-                <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                />
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">1</div>
             </li>
             <li>
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover" />
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">2</div>
             </li>
             <li>
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover" />
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">3</div>
             </li>
             <li>
-                <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover" />
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">4</div>
+            </li>
+            <li>
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">5</div>
+            </li>
+            <li>
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">6</div>
             </li>
         </ul>
     </div>
@@ -32,110 +37,143 @@
     <script>
         const slider = function(els, opts = {}) {
             return new(function() {
-                this.container = typeof els.container === "string" ? document.querySelector(els.container) : els.container;
-                this.list = this.container.querySelector("ul");
-                this.infinite = opts.infinite || false;
-                this.index = opts.index || {
-                    value: 0,
-                };
-                this.vert = opts.vert || false;
-                this.cols = opts.cols || 1;
-                this.gap = opts.gap || 0;
+                this.wrap = typeof els.wrap === "string" ? document.querySelector(els.wrap) : els.wrap;
+                this.list = this.wrap.querySelector("ul");
+                this.list.style.display = "flex";
 
-                if (this.infinite) {
-                    const len = this.list.children.length;
-                    const firsts = [...this.list.children].reduce((a, e, i) => {
-                        if (i < this.cols && !e.isCloned) a.push(e.cloneNode(true));
-                        return a;
-                    }, []);
-                    const lasts = [...this.list.children].reduce((a, e, i) => {
-                        if (i > len - this.cols - 1 && !e.isCloned) a.push(e.cloneNode(true));
-                        return a;
-                    }, []);
-
-                    for (let i = 0; i < this.cols; i++) {
-                        const current = firsts[i];
-                        this.list.insertAdjacentElement("beforeend", current);
-                        current.isCloned = true;
-                    }
-
-                    for (let i = this.cols; i > 0; i--) {
-                        const current = lasts[i - 1];
-                        this.list.insertAdjacentElement("afterbegin", current);
-                        current.isCloned = true;
-                    }
-                }
-
-                this.items = [...this.list.children];
-                this.length = this.items.length;
-
-                var _ = this.vert ?
-                    {
-                        size: "clientHeight",
-                        item: "height",
-                        scroll: "scrollTop",
-                    } :
-                    {
-                        size: "clientWidth",
-                        item: "width",
-                        scroll: "scrollLeft",
+                this.update = (opt = {}) => {
+                    opts = {...opts,
+                        ...opt
                     };
+                    this.infinite = opts.infinite || false;
+                    this.pos = opts.pos || {
+                        value: 0,
+                    };
+                    this.vert = opts.vert || false;
+                    this.move = opts.move || 1;
+                    this.cols = opts.cols || 1;
+                    this.gap = opts.gap || 0;
 
-                this.itemSize = this.container[_.size] / this.cols - (this.gap * (this.cols - 1)) / this.cols;
-                this.scrollLength = this.itemSize + this.gap;
-                this.list.style.gap = this.gap + "px";
+                    if (this.infinite) {
+                        [...this.list.children].map((e) => e.isCloned && e.remove());
 
-                for (let i = 0; i < this.length; i++) {
-                    this.items[i].style[_.item] = this.itemSize + "px";
-                }
+                        const len = this.list.children.length;
+                        const firsts = [...this.list.children].reduce((a, e, i) => {
+                            if (i < this.cols) {
+                                const x = e.cloneNode(true);
+                                x.setAttribute("x-clone", true);
+                                a.push(x);
+                            }
+                            return a;
+                        }, []);
+                        const lasts = [...this.list.children].reduce((a, e, i) => {
+                            if (i > len - this.cols - 1) {
+                                const x = e.cloneNode(true);
+                                x.setAttribute("x-clone", true);
+                                a.push(x);
+                            }
+                            return a;
+                        }, []);
+
+                        if (firsts.length)
+                            for (let i = 0; i < this.cols; i++) {
+                                const current = firsts[i];
+                                this.list.insertAdjacentElement("beforeend", current);
+                                current.isCloned = true;
+                            }
+
+                        if (lasts.length)
+                            for (let i = this.cols; i > 0; i--) {
+                                const current = lasts[i - 1];
+                                this.list.insertAdjacentElement("afterbegin", current);
+                                current.isCloned = true;
+                            }
+                    }
+
+                    this.items = [...this.list.children];
+                    this.length = this.items.length;
+
+                    this.__opt = this.vert ?
+                        {
+                            size: "clientHeight",
+                            item: "height",
+                            scroll: "scrollTop",
+                        } :
+                        {
+                            size: "clientWidth",
+                            item: "width",
+                            scroll: "scrollLeft",
+                        };
+
+                    this.list.style.width = "";
+                    this.list.style.flexDirection = "";
+                    this.list.style.width = "";
+                    this.list.style.height = "";
+
+                    this.vert ?
+                        (this.list.style.width = "100%") && (this.list.style.flexDirection = "column") :
+                        (this.list.style.width = "max-content") && (this.list.style.height = "100%");
+
+                    this.itemSize = this.wrap[this.__opt.size] / this.cols - (this.gap * (this.cols - 1)) / this.cols;
+                    this.scrollLength = this.itemSize + this.gap;
+                    this.list.style.gap = this.gap + "px";
+
+                    for (let i = 0; i < this.length; i++) {
+                        this.items[i].style[this.__opt.item] = this.itemSize + "px";
+                    }
+
+                    if (!this.__isLunched && this.pos.value === 0) {
+                        window.addEventListener("resize", this.update);
+                        this.pos.value = this.cols * this.move;
+                        this.__isLunched = true;
+                    }
+
+                    this.wrap.style.scrollBehavior = "unset";
+                    this.wrap[this.__opt.scroll] = this.scrollLength * this.pos.value;
+                    this.wrap.style.scrollBehavior = "smooth";
+                };
+
+                this.update();
 
                 this.scrollTo = () => {
-                    this.container[_.scroll] = this.scrollLength * this.index.value;
+                    this.wrap[this.__opt.scroll] = this.scrollLength * this.pos.value;
                 };
 
-                this.scrollToRight = () => {
-                    if (this.index.value >= this.length - this.cols) {
+                this.scrollNext = () => {
+                    if (this.pos.value >= this.length - this.cols) {
                         if (this.infinite) {
-                            this.container.style.scrollBehavior = "unset";
-                            this.index.value = this.cols;
+                            this.wrap.style.scrollBehavior = "unset";
+                            this.pos.value = this.cols;
                             this.scrollTo();
-                            this.index.value++;
-                            this.container.style.scrollBehavior = "smooth";
-                        } else this.index.value = 0;
-                    } else this.index.value++;
+                            this.pos.value += this.move;
+                            this.wrap.style.scrollBehavior = "smooth";
+                        } else this.pos.value = 0;
+                    } else this.pos.value += this.move;
                     this.scrollTo();
                 };
 
-                this.scrollToLeft = () => {
-                    if (this.index.value <= 0) {
+                this.scrollPrev = () => {
+                    if (this.pos.value <= 0) {
                         if (this.infinite) {
-                            this.container.style.scrollBehavior = "unset";
-                            this.index.value = this.length - this.cols - this.cols;
+                            this.wrap.style.scrollBehavior = "unset";
+                            this.pos.value = this.length - this.cols - this.cols;
                             this.scrollTo();
-                            this.index.value--;
-                            this.container.style.scrollBehavior = "smooth";
-                        } else this.index.value = this.length - this.cols;
-                    } else this.index.value--;
+                            this.pos.value -= this.move;
+                            this.wrap.style.scrollBehavior = "smooth";
+                        } else this.pos.value = this.length - this.cols;
+                    } else this.pos.value -= this.move;
                     this.scrollTo();
                 };
 
-                if (els.leftEl) {
-                    this.leftEl = typeof els.leftEl === "string" ? document.querySelector(els.leftEl) : els.leftEl;
-                    this.leftEl.onclick = this.scrollToLeft;
+                if (els.prev) {
+                    this.prev = typeof els.prev === "string" ? document.querySelector(els.prev) : els.prev;
+                    this.prev.onclick = this.scrollPrev;
                 }
 
-                if (els.rightEl) {
-                    this.rightEl = typeof els.rightEl === "string" ? document.querySelector(els.rightEl) : els.leftEl;
-                    this.rightEl.onclick = this.scrollToRight;
+                if (els.next) {
+                    this.next = typeof els.next === "string" ? document.querySelector(els.next) : els.next;
+                    this.next.onclick = this.scrollNext;
                 }
-
-                this.container.style.scrollBehavior = "unset";
-                if (!this.__isLunched && this.index.value === 0) {
-                    this.index.value = this.cols;
-                    this.__isLunched = true;
-                }
-                this.container[_.scroll] = this.scrollLength * this.index.value;
-                this.container.style.scrollBehavior = "smooth";
             })();
         };
 
@@ -143,39 +181,32 @@
             value: 0,
         };
 
-        slider({
-            container: "#slider-container",
-            leftEl: "#left",
-            rightEl: "#right",
+        const slide = slider({
+            wrap: "#slider-container",
+            prev: "#left",
+            next: "#right",
         }, {
-            index: idx,
+            pos: idx,
             gap: 16,
             cols: 3,
+            move: 3,
             vert: true,
             infinite: true,
         });
 
-        window.addEventListener("resize", () => {
-            slider({
-                container: "#slider-container",
-                leftEl: "#left",
-                rightEl: "#right",
-            }, {
-                index: idx,
-                gap: 16,
-                cols: 2,
-                infinite: true,
-            });
-        });
-
-        const left = document.querySelector("#left");
+        const right = document.querySelector("#right");
         const repeatOften = () => {
             setTimeout(() => {
-                left.click();
+                right.click();
                 requestAnimationFrame(repeatOften);
             }, 3000);
         };
         requestAnimationFrame(repeatOften);
+
+        // i < cols
+        // len - i - 1
+        // i > len + cols - 1
+        // len - cols - i - 1
     </script>
 </body>
 
