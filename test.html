@@ -10,21 +10,8 @@
 </head>
 
 <body>
-    <div id="slider-container" class="rounded-md overflow-hidden w-full lg:w-2/3 h-96 mx-auto">
-        <ul id="slider-list" class="flex flex-col w-full h-full">
-            <li>
-                <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                />
-            </li>
-            <li>
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover" />
-            </li>
-            <li>
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover" />
-            </li>
-            <li>
-                <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover" />
-            </li>
+    <div id="slider-container" class="rounded-md overflow-hidden w-full lg:w-2/3 h-screen mx-auto">
+        <ul id="slider-list" class="flex w-full flex-col">
             <li>
                 <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
                 />
@@ -47,14 +34,40 @@
             return new(function() {
                 this.container = typeof els.container === "string" ? document.querySelector(els.container) : els.container;
                 this.list = this.container.querySelector("ul");
-                this.items = [...this.list.children];
-                this.length = this.items.length;
+                this.infinite = opts.infinite || false;
                 this.index = opts.index || {
                     value: 0,
                 };
                 this.vert = opts.vert || false;
                 this.cols = opts.cols || 1;
                 this.gap = opts.gap || 0;
+
+                if (this.infinite) {
+                    const len = this.list.children.length;
+                    const firsts = [...this.list.children].reduce((a, e, i) => {
+                        if (i < this.cols && !e.isCloned) a.push(e.cloneNode(true));
+                        return a;
+                    }, []);
+                    const lasts = [...this.list.children].reduce((a, e, i) => {
+                        if (i > len - this.cols - 1 && !e.isCloned) a.push(e.cloneNode(true));
+                        return a;
+                    }, []);
+
+                    for (let i = 0; i < this.cols; i++) {
+                        const current = firsts[i];
+                        this.list.insertAdjacentElement("beforeend", current);
+                        current.isCloned = true;
+                    }
+
+                    for (let i = this.cols; i > 0; i--) {
+                        const current = lasts[i - 1];
+                        this.list.insertAdjacentElement("afterbegin", current);
+                        current.isCloned = true;
+                    }
+                }
+
+                this.items = [...this.list.children];
+                this.length = this.items.length;
 
                 var _ = this.vert ?
                     {
@@ -72,8 +85,6 @@
                 this.scrollLength = this.itemSize + this.gap;
                 this.list.style.gap = this.gap + "px";
 
-                console.log(this.scrollLength, _);
-
                 for (let i = 0; i < this.length; i++) {
                     this.items[i].style[_.item] = this.itemSize + "px";
                 }
@@ -83,14 +94,28 @@
                 };
 
                 this.scrollToRight = () => {
-                    if (this.index.value >= this.length - this.cols) this.index.value = 0;
-                    else this.index.value++;
+                    if (this.index.value >= this.length - this.cols) {
+                        if (this.infinite) {
+                            this.container.style.scrollBehavior = "unset";
+                            this.index.value = this.cols;
+                            this.scrollTo();
+                            this.index.value++;
+                            this.container.style.scrollBehavior = "smooth";
+                        } else this.index.value = 0;
+                    } else this.index.value++;
                     this.scrollTo();
                 };
 
                 this.scrollToLeft = () => {
-                    if (this.index.value <= 0) this.index.value = this.length - this.cols;
-                    else this.index.value--;
+                    if (this.index.value <= 0) {
+                        if (this.infinite) {
+                            this.container.style.scrollBehavior = "unset";
+                            this.index.value = this.length - this.cols - this.cols;
+                            this.scrollTo();
+                            this.index.value--;
+                            this.container.style.scrollBehavior = "smooth";
+                        } else this.index.value = this.length - this.cols;
+                    } else this.index.value--;
                     this.scrollTo();
                 };
 
@@ -105,6 +130,10 @@
                 }
 
                 this.container.style.scrollBehavior = "unset";
+                if (!this.__isLunched && this.index.value === 0) {
+                    this.index.value = this.cols;
+                    this.__isLunched = true;
+                }
                 this.container[_.scroll] = this.scrollLength * this.index.value;
                 this.container.style.scrollBehavior = "smooth";
             })();
@@ -120,7 +149,10 @@
             rightEl: "#right",
         }, {
             index: idx,
+            gap: 16,
+            cols: 3,
             vert: true,
+            infinite: true,
         });
 
         window.addEventListener("resize", () => {
@@ -130,9 +162,20 @@
                 rightEl: "#right",
             }, {
                 index: idx,
-                vert: true,
+                gap: 16,
+                cols: 2,
+                infinite: true,
             });
         });
+
+        const left = document.querySelector("#left");
+        const repeatOften = () => {
+            setTimeout(() => {
+                left.click();
+                requestAnimationFrame(repeatOften);
+            }, 3000);
+        };
+        requestAnimationFrame(repeatOften);
     </script>
 </body>
 
