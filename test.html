@@ -11,7 +11,7 @@
 
 <body>
     <div id="slider-container" class="rounded-md overflow-hidden w-full lg:w-2/3 h-96 mx-auto">
-        <ul id="slider-list" class="flex w-max h-full">
+        <ul id="slider-list" class="flex flex-col w-full h-full">
             <li>
                 <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
                 />
@@ -45,28 +45,41 @@
     <script>
         const slider = function(els, opts = {}) {
             return new(function() {
-                this.container = document.querySelector(els.container);
+                this.container = typeof els.container === "string" ? document.querySelector(els.container) : els.container;
                 this.list = this.container.querySelector("ul");
-
                 this.items = [...this.list.children];
                 this.length = this.items.length;
                 this.index = opts.index || {
                     value: 0,
                 };
-                this.shift = opts.shift || 1;
+                this.vert = opts.vert || false;
                 this.cols = opts.cols || 1;
                 this.gap = opts.gap || 0;
 
-                this.itemWidth = this.container.clientWidth / this.cols - (this.gap * (this.cols - 1)) / this.cols;
-                this.scrollLength = this.itemWidth * this.shift + this.gap * this.shift;
+                var _ = this.vert ?
+                    {
+                        size: "clientHeight",
+                        item: "height",
+                        scroll: "scrollTop",
+                    } :
+                    {
+                        size: "clientWidth",
+                        item: "width",
+                        scroll: "scrollLeft",
+                    };
+
+                this.itemSize = this.container[_.size] / this.cols - (this.gap * (this.cols - 1)) / this.cols;
+                this.scrollLength = this.itemSize + this.gap;
                 this.list.style.gap = this.gap + "px";
 
+                console.log(this.scrollLength, _);
+
                 for (let i = 0; i < this.length; i++) {
-                    this.items[i].style.width = this.itemWidth + "px";
+                    this.items[i].style[_.item] = this.itemSize + "px";
                 }
 
                 this.scrollTo = () => {
-                    this.container.scrollLeft = this.scrollLength * this.index.value;
+                    this.container[_.scroll] = this.scrollLength * this.index.value;
                 };
 
                 this.scrollToRight = () => {
@@ -82,17 +95,17 @@
                 };
 
                 if (els.leftEl) {
-                    this.leftEl = document.querySelector(els.leftEl);
+                    this.leftEl = typeof els.leftEl === "string" ? document.querySelector(els.leftEl) : els.leftEl;
                     this.leftEl.onclick = this.scrollToLeft;
                 }
 
                 if (els.rightEl) {
-                    this.rightEl = document.querySelector(els.rightEl);
+                    this.rightEl = typeof els.rightEl === "string" ? document.querySelector(els.rightEl) : els.leftEl;
                     this.rightEl.onclick = this.scrollToRight;
                 }
 
                 this.container.style.scrollBehavior = "unset";
-                this.container.scrollLeft = this.scrollLength * this.index.value;
+                this.container[_.scroll] = this.scrollLength * this.index.value;
                 this.container.style.scrollBehavior = "smooth";
             })();
         };
@@ -106,9 +119,8 @@
             leftEl: "#left",
             rightEl: "#right",
         }, {
-            gap: 10,
-            cols: 2,
             index: idx,
+            vert: true,
         });
 
         window.addEventListener("resize", () => {
@@ -117,19 +129,10 @@
                 leftEl: "#left",
                 rightEl: "#right",
             }, {
-                gap: 10,
-                cols: 2,
                 index: idx,
+                vert: true,
             });
         });
-
-        function test(s) {
-            if (s)
-                return new Promise((res) => {
-                    res(100);
-                });
-            return 100;
-        }
     </script>
 </body>
 
