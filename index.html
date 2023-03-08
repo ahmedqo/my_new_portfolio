@@ -88,7 +88,7 @@
                 {{ #import "header" }}
                 <main class="{{ #if dark }} bg-gray-900 {{ #else }} bg-gray-50 {{ #/if }} min-h-screen overflow-hidden">
                     <div class="mx-auto container p-4 flex flex-col gap-12 md:gap-16 lg:gap-20 my-8 md:my-10 lg:my-14">
-                        <section class="w-full grid grid-rows-1 grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center">
+                        <section class="w-full grid grid-rows-1 grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                             <div class="_shadow w-full order-2 md:order-1 flex flex-col gap-4 lg:gap-6">
                                 {{ #each services as service }}
                                     <div data-aos-offset="0" data-aos-delay="100" data-aos="zoom-in-up" class="_hover {{ #if dark }} bg-gray-800 {{ #else }} bg-gray-200 {{ #/if }} rounded-xl p-6 lg:p-10 flex items-center justify-between gap-4">
@@ -111,10 +111,9 @@
                                 <h3 data-aos-offset="0" data-aos="slide-left" class="text-4xl lg:text-6xl -mt-4 md:-mt-6">Hello! I’m Ahmed Qoreichi</h3>
                                 <p data-aos-offset="0" data-aos="slide-down" class="text-xl text-gray-500">
                                     As a full-stack developers, we have expertise in both front-end and back-end web development. 
-                                    We possess a broad range of programming skills, including proficiency in multiple programming languages, frameworks, and libraries. 
                                     We are skilled in developing web applications from start to finish, including designing and implementing user interfaces, developing server-side logic, and building and maintaining databases.
                                 </p>
-                                <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="w-max font-semibold text-xl text-purple-500 border-2 border-purple-500 px-4 py-2 hover:bg-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:text-gray-50 rounded-lg">
+                                <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="w-max font-semibold text-xl text-purple-500 border-2 border-purple-500 px-4 py-2 hover:bg-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:text-gray-50 rounded-lg mt-4">
                                     DOWNLOAD CV
                                 </a>
                             </div>
