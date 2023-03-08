@@ -5,406 +5,131 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/assets/style/index.css" />
     <title>Document</title>
-    <style>
-        * {
-            direction: rtl;
-        }
-        
-        .clip {
-            filter: url("#clip");
-        }
-        
-        .clip span {
-            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 20% 100%);
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/style/index.css" />
 </head>
 
-<body class="bg-gray-900">
-    <header class="px-4 py-10 bg-gray-800">
-        <div class="mx-auto container grid items-center grid-rows-1 grid-cols-1 lg:grid-cols-2">
-            <div class="w-full order-2 lg:order-1 mt-8 lg:mt-0 flex flex-col gap-4 lg:gap-8">
-                <h1 class="text-4xl lg:text-7xl font-black text-gray-50">Some text put here</h1>
-                <p class="text-lg lg:text-xl text-gray-400">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio aspernatur aperiam aliquam doloribus quo, harum vel Distinctio aspernatur aperiam aliquam doloribus quo, harum vel
-                </p>
-                <a href="#" class="bg-yellow-500 flex items-center justify-center text-gray-50 w-max py-2 px-4 mt-2 lg:mt-4 rounded-xl font-black text-lg hover:bg-yellow-400 focus:bg-yellow-400">
-						Search for property
-					</a>
-            </div>
-            <div class="w-full overflow-hidden order-1 lg:order-2">
-                <div class="flex gap-10 px-14 -skew-y-6">
-                    <div id="main-slider-1" class="w-full overflow-hidden mt-10">
-                        <ul class="w-full flex flex-col duration-300 transition-all">
-                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-xl">
-                                <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                                />
-                            </li>
-                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-xl">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover" />
-                            </li>
-                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-xl">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover" />
-                            </li>
-                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-xl">
-                                <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover" />
-                            </li>
-                        </ul>
-                    </div>
-                    <div id="main-slider-2" class="w-full overflow-hidden">
-                        <ul class="w-full flex flex-col duration-300 transition-all">
-                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-xl">
-                                <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                                />
-                            </li>
-                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-xl">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover" />
-                            </li>
-                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-xl">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover" />
-                            </li>
-                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-xl">
-                                <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover" />
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-    <main class="mx-auto container p-4 my-12 lg:my-20">
-        <section class="w-full grid grid-rows-1 grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-12 lg:mb-20">
-            <div class="w-full">
-                <div class="w-full border-2 border-yellow-500 rounded-xl rounded-br-none aspect-video overflow-hidden">
-                    <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                    />
-                </div>
-                <div class="w-max relative clip" style="z-index: -1">
-                    <span class="w-max pr-2 pl-4 block text-gray-50 font-black text-lg bg-yellow-500 pt-[10px] -mt-[12px]">300$</span>
-                </div>
-            </div>
-            <div class="w-full">
-                <div class="w-full border-2 border-yellow-500 rounded-xl rounded-br-none aspect-video overflow-hidden">
-                    <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                    />
-                </div>
-                <div class="w-max relative clip" style="z-index: -1">
-                    <span class="w-max pr-2 pl-4 block text-gray-50 font-black text-lg bg-yellow-500 pt-[10px] -mt-[12px]">300$</span>
-                </div>
-            </div>
-            <div class="w-full">
-                <div class="w-full border-2 border-yellow-500 rounded-xl rounded-br-none aspect-video overflow-hidden">
-                    <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                    />
-                </div>
-                <div class="w-max relative clip" style="z-index: -1">
-                    <span class="w-max pr-2 pl-4 block text-gray-50 font-black text-lg bg-yellow-500 pt-[10px] -mt-[12px]">300$</span>
-                </div>
-            </div>
-            <div class="w-full">
-                <div class="w-full border-2 border-yellow-500 rounded-xl rounded-br-none aspect-video overflow-hidden">
-                    <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                    />
-                </div>
-                <div class="w-max relative clip" style="z-index: -1">
-                    <span class="w-max pr-2 pl-4 block text-gray-50 font-black text-lg bg-yellow-500 pt-[10px] -mt-[12px]">300$</span>
-                </div>
-            </div>
-            <svg class="hidden" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
-					<defs>
-						<filter id="clip">
-							<feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
-							<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
-							<feComposite in="SourceGraphic" in2="goo" operator="atop" />
-						</filter>
-					</defs>
-				</svg>
-        </section>
-        <section class="w-full flex flex-col gap-6 lg:gap-10">
-            <div class="w-full flex flex-wrap items-center">
-                <div class="flex-1">
-                    <h1 class="text-2xl lg:text-4xl font-black text-gray-50 mb-2 lg:mb-3">Property name here</h1>
-                    <p class="text-lg lg:text-xl text-gray-400">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </div>
-                <div class="w-max">
-                    <span class="text-4xl lg:text-5xl font-black text-gray-50"> 300$ </span>
-                </div>
-            </div>
-            <div class="w-full grid grid-rows-1 grid-cols-1 lg:grid-cols-12">
-                <div class="p-6 lg:p-10 flex flex-col gap-6 lg:gap-10 lg:col-span-7 rounded-xl bg-gray-800 border-2 border-yellow-500 order-2 lg:order-1">
-                    <div class="w-full px-6">
-                        <div class="relative">
-                            <div id="slider-container" class="w-full rounded-md overflow-hidden h-[320px] lg:h-[400px]">
-                                <ul id="slider-list" class="flex w-max h-full">
-                                    <li>
-                                        <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                                        />
-                                    </li>
-                                    <li>
-                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover" />
-                                    </li>
-                                    <li>
-                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover" />
-                                    </li>
-                                    <li>
-                                        <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover" />
-                                    </li>
-                                    <li>
-                                        <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
-                                        />
-                                    </li>
-                                    <li>
-                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover" />
-                                    </li>
-                                    <li>
-                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover" />
-                                    </li>
-                                    <li>
-                                        <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover" />
-                                    </li>
-                                </ul>
-                            </div>
-                            <button id="arrow-left" type="button" class="flex items-center justify-center absolute -left-6 top-1/2 -translate-y-1/2 text-white w-12 h-12 bg-yellow-500 rounded-full">
-									<svg class="block h-10 w-10 pointer-events-none" fill="currentcolor" viewBox="0 96 960 960">
-										<path
-											d="M528 805 331 607q-7-6-10.5-14t-3.5-18q0-9 3.5-17.5T331 543l198-199q13-12 32-12t33 12q13 13 12.5 33T593 410L428 575l166 166q13 13 13 32t-13 32q-14 13-33.5 13T528 805Z"
-										/>
-									</svg>
-								</button>
-                            <button id="arrow-right" type="button" class="flex items-center justify-center absolute -right-6 top-1/2 -translate-y-1/2 text-white w-12 h-12 bg-yellow-500 rounded-full">
-									<svg class="block h-10 w-10 pointer-events-none" fill="currentcolor" viewBox="0 96 960 960">
-										<path
-											d="M344 805q-14-15-14-33.5t14-31.5l164-165-165-166q-14-12-13.5-32t14.5-33q13-14 31.5-13.5T407 344l199 199q6 6 10 14.5t4 17.5q0 10-4 18t-10 14L408 805q-13 13-32 12.5T344 805Z"
-										/>
-									</svg>
-								</button>
-                        </div>
-                        <div id="slider-buttons" class="relative h-[80px] lg:h-[140px] mx-auto overflow-hidden -mt-6 lg:-mt-10">
-                            <ul id="slider-buttons-list" class="flex w-max justify-center h-full">
-                                <li class="h-full aspect-square">
-                                    <button type="button" class="h-full w-full rounded-md border-2 border-yellow-500 overflow-hidden">
-											<img
-												src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo="
-												class="w-full h-full object-cover"
-											/>
-										</button>
-                                </li>
-                                <li class="h-full aspect-square">
-                                    <button type="button" class="h-full w-full rounded-md border-2 border-yellow-500 overflow-hidden">
-											<img
-												src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU"
-												class="w-full h-full object-cover"
-											/>
-										</button>
-                                </li>
-                                <li class="h-full aspect-square">
-                                    <button type="button" class="h-full w-full rounded-md border-2 border-yellow-500 overflow-hidden">
-											<img
-												src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU"
-												class="w-full h-full object-cover"
-											/>
-										</button>
-                                </li>
-                                <li class="h-full aspect-square">
-                                    <button type="button" class="h-full w-full rounded-md border-2 border-yellow-500 overflow-hidden">
-											<img
-												src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww="
-												class="w-full h-full object-cover"
-											/>
-										</button>
-                                </li>
-                                <li class="h-full aspect-square">
-                                    <button type="button" class="h-full w-full rounded-md border-2 border-yellow-500 overflow-hidden">
-											<img
-												src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo="
-												class="w-full h-full object-cover"
-											/>
-										</button>
-                                </li>
-                                <li class="h-full aspect-square">
-                                    <button type="button" class="h-full w-full rounded-md border-2 border-yellow-500 overflow-hidden">
-											<img
-												src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU"
-												class="w-full h-full object-cover"
-											/>
-										</button>
-                                </li>
-                                <li class="h-full aspect-square">
-                                    <button type="button" class="h-full w-full rounded-md border-2 border-yellow-500 overflow-hidden">
-											<img
-												src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU"
-												class="w-full h-full object-cover"
-											/>
-										</button>
-                                </li>
-                                <li class="h-full aspect-square">
-                                    <button type="button" class="h-full w-full rounded-md border-2 border-yellow-500 overflow-hidden">
-											<img
-												src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww="
-												class="w-full h-full object-cover"
-											/>
-										</button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="w-full flex flex-col gap-2">
-                        <h2 class="text-md lg:text-lg font-black text-gray-50">Description:</h2>
-                        <p class="text-md lg:text-lg text-gray-400">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellendus in quidem ullam debitis vel perferendis voluptatem temporibus fuga rerum adipisci dolores, totam dicta atque eius nulla, necessitatibus illo exercitationem voluptate? At aut laudantium
-                            numquam blanditiis exercitationem nemo! Ab repellendus quam quas quo, ratione, doloremque sint maiores a maxime explicabo eum.
-                        </p>
-                    </div>
-                </div>
-                <div class="bg-gray-200 lg:col-span-5 -mb-10 lg:mb-0 lg:-mr-10 rounded-xl overflow-hidden order-1 lg:order-2" style="min-height: 300px; z-index: -1">
-                    <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA1VnJg0MSWDvSTBCQCcWt-DqddxrkOyQ4&amp;q=21A%2C+The+cut+carpentry%2C+23A+16+St%2C+Shuwaikh+Industrial&amp;zoom=16" loading="lazy" width="100%" height="100%"></iframe>
-                </div>
-            </div>
-            <div class="w-full rounded-xl border-2 border-yellow-500 p-6 lg:p-10"></div>
-        </section>
-    </main>
+<body>
+    <div id="slider-container" class="rounded-md overflow-hidden w-full lg:w-2/3 h-96 mx-auto">
+        <ul id="slider-list" class="flex w-max h-full">
+            <li>
+                <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
+                />
+            </li>
+            <li>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover" />
+            </li>
+            <li>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover" />
+            </li>
+            <li>
+                <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover" />
+            </li>
+            <li>
+                <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
+                />
+            </li>
+            <li>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover" />
+            </li>
+            <li>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover" />
+            </li>
+            <li>
+                <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover" />
+            </li>
+        </ul>
+    </div>
+    <button id="left">left</button>
+    <button id="right">right</button>
     <script>
-        var $index_0 = {
-            value: 0,
-        };
-        var $index_1 = {
-            value: 0,
-        };
-        var $index_2 = {
-            value: 0,
-        };
+        const slider = function(els, opts = {}) {
+            return new(function() {
+                this.container = document.querySelector(els.container);
+                this.list = this.container.querySelector("ul");
 
-        function main_slider(selector, index, pos) {
-            const container = document.querySelector(selector);
-            const list = container.querySelector("ul");
-            const length = list.children.length;
-            const items = list.children;
-            const gap = 40;
+                this.items = [...this.list.children];
+                this.length = this.items.length;
+                this.index = opts.index || {
+                    value: 0,
+                };
+                this.shift = opts.shift || 1;
+                this.cols = opts.cols || 1;
+                this.gap = opts.gap || 0;
 
-            container.style.height = container.clientWidth * 2 + gap + "px";
-            list.style.gap = gap + "px";
+                this.itemWidth = this.container.clientWidth / this.cols - (this.gap * (this.cols - 1)) / this.cols;
+                this.scrollLength = this.itemWidth * this.shift + this.gap * this.shift;
+                this.list.style.gap = this.gap + "px";
 
-            if (pos) {
-                container.classList.add("-scale-y-100");
-                [...items].forEach((item) => {
-                    item.classList.add("-scale-y-100");
-                });
-            }
-
-            function slide() {
-                if (index.value >= length - 2) index.value = 0;
-                else index.value += 1;
-                if (length - index.value >= 2)
-                    list.style.marginTop = "-" + (index.value * container.clientWidth + (index.value == 0 ? 0 : gap * index.value - 1)) + "px";
-            }
-
-            const repeatOften = () => {
-                if (index.timer) clearTimeout(index.timer);
-                index.timer = setTimeout(() => {
-                    slide();
-                    requestAnimationFrame(repeatOften);
-                }, 5000);
-            };
-            requestAnimationFrame(repeatOften);
-        }
-
-        function slider(index) {
-            const container = document.querySelector("#slider-container");
-            const list = document.querySelector("#slider-list");
-            const left = document.querySelector("#arrow-left");
-            const right = document.querySelector("#arrow-right");
-            const length = list.children.length;
-            const items = list.children;
-
-            const gap = 36;
-            const buttons = document.querySelector("#slider-buttons");
-            const btnList = document.querySelector("#slider-buttons-list");
-
-            list.classList.remove("transition-all", "duration-300");
-            btnList.classList.remove("transition-all", "duration-300");
-            buttons.style.width = buttons.clientHeight * 3 + gap * 2 + "px";
-            btnList.style.gap = gap + "px";
-
-            for (let i = 0; i < length; i++) {
-                items[i].style.width = container.clientWidth + "px";
-            }
-
-            if (!left.hasEvent) {
-                left.addEventListener("click", () => {
-                    if (index.value <= 0) index.value = length - 1;
-                    else index.value -= 1;
-                    slide();
-                });
-                left.hasEvent = true;
-            }
-
-            if (!right.hasEvent) {
-                right.addEventListener("click", () => {
-                    if (index.value >= length - 1) index.value = 0;
-                    else index.value += 1;
-                    slide();
-                });
-                right.hasEvent = true;
-            }
-
-            [...btnList.children].forEach((el, i) => {
-                if (!el.children[0].hasEvent) {
-                    el.children[0].addEventListener("click", () => {
-                        index.value = i;
-                        slide();
-                    });
-                    el.children[0].hasEvent = true;
+                for (let i = 0; i < this.length; i++) {
+                    this.items[i].style.width = this.itemWidth + "px";
                 }
-            });
 
-            const first = btnList.children[0];
-            const last = btnList.children[length - 1];
+                this.scrollTo = () => {
+                    this.container.scrollLeft = this.scrollLength * this.index.value;
+                };
 
-            if (!first.hasAttribute("data-moved")) {
-                const el = last.cloneNode(true);
-                el.addEventListener("click", () => {
-                    index.value = length - 1;
-                    slide();
-                });
-                el.setAttribute("data-moved", true);
-                btnList.insertAdjacentElement("afterbegin", el);
-            }
+                this.scrollToRight = () => {
+                    if (this.index.value >= this.length - this.cols) this.index.value = 0;
+                    else this.index.value++;
+                    this.scrollTo();
+                };
 
-            if (!last.hasAttribute("data-moved")) {
-                const el = first.cloneNode(true);
-                el.addEventListener("click", () => {
-                    index.value = 0;
-                    slide();
-                });
-                el.setAttribute("data-moved", true);
-                btnList.insertAdjacentElement("beforeend", el);
-            }
+                this.scrollToLeft = () => {
+                    if (this.index.value <= 0) this.index.value = this.length - this.cols;
+                    else this.index.value--;
+                    this.scrollTo();
+                };
 
-            function slide() {
-                list.style.marginRight = "-" + index.value * container.clientWidth + "px";
-                if (length - index.value + 2 >= 3)
-                    btnList.style.marginRight = "-" + (index.value * buttons.clientHeight + (index.value == 0 ? 0 : gap * index.value - 1)) + "px";
-                if (index.value == length + 1)
-                    btnList.style.marginRight = "-" + ((index.value - 2) * buttons.clientHeight + (index.value == 0 ? 0 : gap * (length - 3))) + "px";
-            }
+                if (els.leftEl) {
+                    this.leftEl = document.querySelector(els.leftEl);
+                    this.leftEl.onclick = this.scrollToLeft;
+                }
 
-            slide();
-            setTimeout(() => {
-                list.classList.add("transition-all", "duration-300");
-                btnList.classList.add("transition-all", "duration-300");
-            }, 10);
-        }
+                if (els.rightEl) {
+                    this.rightEl = document.querySelector(els.rightEl);
+                    this.rightEl.onclick = this.scrollToRight;
+                }
+
+                this.container.style.scrollBehavior = "unset";
+                this.container.scrollLeft = this.scrollLength * this.index.value;
+                this.container.style.scrollBehavior = "smooth";
+            })();
+        };
+
+        const idx = {
+            value: 0,
+        };
+
+        slider({
+            container: "#slider-container",
+            leftEl: "#left",
+            rightEl: "#right",
+        }, {
+            gap: 10,
+            cols: 2,
+            index: idx,
+        });
 
         window.addEventListener("resize", () => {
-            slider($index_0);
-            main_slider("#main-slider-1", $index_1, true);
-            main_slider("#main-slider-2", $index_2);
+            slider({
+                container: "#slider-container",
+                leftEl: "#left",
+                rightEl: "#right",
+            }, {
+                gap: 10,
+                cols: 2,
+                index: idx,
+            });
         });
-        main_slider("#main-slider-1", $index_1, true);
-        main_slider("#main-slider-2", $index_2);
-        slider($index_0);
+
+        function test(s) {
+            if (s)
+                return new Promise((res) => {
+                    res(100);
+                });
+            return 100;
+        }
     </script>
 </body>
 

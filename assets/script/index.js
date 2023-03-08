@@ -53,9 +53,6 @@ Dust.init(async function() {
             }
         ],
         projects: res.projects || [],
-        gotoLink(web) {
-            web && (window.location = web);
-        },
         toggleDarkMode() {
             this.state.dark = !this.state.dark;
             this.state.auto = false;

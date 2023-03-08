@@ -1337,12 +1337,11 @@ const Dust = (() => {
         }
 
         async __run() {
-            const html = new(this.__get("Preset"))(this.template, this.state, true);
             if (this.style) {
-                const sass = await new(this.__get("Preset"))(this.sass, this.state).exec("html");
+                const sass = new(this.__get("Preset"))(this.sass, this.state).exec("html");
                 this.style.textContent = new(this.__get("Sass"))(sass).exec();
             }
-            const tree = await html.exec();
+            const tree = await new(this.__get("Preset"))(this.template, this.state, true).exec();
             if (tree.children.length) {
                 if (!this.props) this.props = new(this.__get("Maker"))(this.container, tree);
                 this.props.exec(tree);
@@ -1364,7 +1363,7 @@ const Dust = (() => {
             this.__run();
 
             const repeatOften = () => {
-                if (this.constructor.__CONT == true) this.constructor.__exec("__STRT");
+                if (this.constructor.__CONT === true) this.constructor.__exec("__STRT");
                 else requestAnimationFrame(repeatOften);
             }
             requestAnimationFrame(repeatOften);
@@ -1454,13 +1453,13 @@ const Dust = (() => {
             __mixin(csstree) {
                 var newtree = {};
                 Object.keys(csstree).forEach(key => {
-                    if (typeof csstree[key] == "object") {
+                    if (typeof csstree[key] === "object") {
                         newtree[key] = this.__mixin(csstree[key]);
                     } else {
-                        if (key == "@include") {
+                        if (key === "@include") {
                             const names = csstree[key].split(",").map(e => e.trim());
                             names.forEach(name => {
-                                const object = this.__get("Const").mixins.find(e => e.name == name).properties;
+                                const object = this.__get("Const").mixins.find(e => e.name === name).properties;
                                 newtree = {
                                     ...newtree,
                                     ...this.__mixin(object)
@@ -1476,11 +1475,11 @@ const Dust = (() => {
 
             __variable(csstree) {
                 Object.keys(csstree).forEach(key => {
-                    if (typeof csstree[key] == "object") {
+                    if (typeof csstree[key] === "object") {
                         csstree[key] = this.__variable(csstree[key]);
                     } else {
                         csstree[key] = csstree[key].replace(/\$([A-za-z0-9_-]+)/g, (_, s) => {
-                            return this.__get("Const").variables.find(e => e.name == s).value;
+                            return this.__get("Const").variables.find(e => e.name === s).value;
                         });
                     }
                 });
@@ -1490,12 +1489,12 @@ const Dust = (() => {
             __property(csstree, parent, newtree) {
                 const properties = [];
                 Object.keys(csstree).forEach(key => {
-                    if (typeof csstree[key] == "object") {
+                    if (typeof csstree[key] === "object") {
                         var _ = [];
                         const selector = key.split(",").map(e => e.trim());
                         for (let i = 0; i < parent.length; i++) {
                             for (let j = 0; j < selector.length; j++) {
-                                const text = parent[i] + (selector[j][0] == "&" ? selector[j].substr(1) : " " + selector[j]);
+                                const text = parent[i] + (selector[j][0] === "&" ? selector[j].substr(1) : " " + selector[j]);
                                 _.push(text);
                             }
                         }
@@ -1517,13 +1516,13 @@ const Dust = (() => {
                 const csstree = this.__object();
                 Object.keys(csstree).forEach(key => {
                     let found = false;
-                    if (key[0] == "$") {
+                    if (key[0] === "$") {
                         this.__get("Const").variables.push({
                             name: key.slice(1),
                             value: csstree[key],
                         });
                         found = true;
-                    } else if (key.slice(1, 6) == "mixin") {
+                    } else if (key.slice(1, 6) === "mixin") {
                         this.__get("Const").mixins.push({
                             name: key.slice(6).trim(),
                             properties: {
@@ -1531,7 +1530,7 @@ const Dust = (() => {
                             }
                         });
                         found = true;
-                    } else if (key.slice(1, 7) == "import") {
+                    } else if (key.slice(1, 7) === "import") {
                         this.__get("Const").imports.push(decodeURIComponent(csstree[key]));
                         found = true;
                     }
@@ -1544,11 +1543,11 @@ const Dust = (() => {
             __clean() {
                 const position = [];
                 this.__get("Const").tree = this.__get("Const").tree.sort((a, b) => {
-                    const apos = parseInt(a.properties.find(e => e.name == "@position").value);
-                    const bpos = parseInt(b.properties.find(e => e.name == "@position").value);
+                    const apos = parseInt(a.properties.find(e => e.name === "@position").value);
+                    const bpos = parseInt(b.properties.find(e => e.name === "@position").value);
                     return apos - bpos;
                 }).map(e => {
-                    var position = e.properties.find(e => e.name == "@position");
+                    var position = e.properties.find(e => e.name === "@position");
                     position = e.properties.indexOf(position);
                     e.properties.splice(position, 1);
                     return e;
@@ -1565,7 +1564,7 @@ const Dust = (() => {
                     }
                     if (tree.selector[0].startsWith("@frame")) {
                         const name = tree.selector[0].split(" ")[1];
-                        var found = this.__get("Const").frames.find(e => e.name == name);
+                        var found = this.__get("Const").frames.find(e => e.name === name);
                         if (!found) {
                             this.__get("Const").frames.push({
                                 name: name,
@@ -1599,7 +1598,7 @@ const Dust = (() => {
             }
 
             __empty(str) {
-                return typeof str == 'undefined' || str.length == 0 || str == null;
+                return typeof str === 'undefined' || str.length === 0 || str === null;
             }
 
             __string(object) {
@@ -1800,9 +1799,7 @@ const Dust = (() => {
                 return code;
             }
 
-            async exec(type) {
-                if (this.fetch)
-                    this.template = await this.__include(this.template);
+            __run(type) {
                 const str = this.__token(this.template);
                 const res = new Function(
                     "",
@@ -1813,7 +1810,7 @@ const Dust = (() => {
                     ".__HELP[fn]=" +
                     $NAME +
                     ".__HELP[fn].bind($SELF)};" +
-                    "var $TXT = '', $JSX = [], $EACH = (obj, func) => {if (obj == null) {return obj;}let index = -1;if (Array.isArray(obj)) {const length = obj.length;let count = 1;while (++index < length) {if (func(obj[index], {key: index,round: count,index: count - 1,}) === false) {break;}count++;}}let key = Object.keys(obj);const length = key.length;let count = 1;while (++index < length) {if (func(obj[key[index]], {key: key[index],round: count,index: count - 1,}) === false) {break;}count++;}}, $RANGE = (times, func) => {for (let i = 0; i < times; i++) {func({round: i + 1,index: i,});}};" +
+                    "var $TXT = '', $JSX = [], $EACH = (obj, func) => {if (obj ===null) {return obj;}let index = -1;if (Array.isArray(obj)) {const length = obj.length;let count = 1;while (++index < length) {if (func(obj[index], {key: index,round: count,index: count - 1,}) === false) {break;}count++;}}let key = Object.keys(obj);const length = key.length;let count = 1;while (++index < length) {if (func(obj[key[index]], {key: key[index],round: count,index: count - 1,}) === false) {break;}count++;}}, $RANGE = (times, func) => {for (let i = 0; i < times; i++) {func({round: i + 1,index: i,});}};" +
                     " with($SELF || {}) { try {" +
                     str +
                     " } catch(e) { console.error(e); }}return [$TXT.split('{(@>_<@)}'), ...$JSX];}"
@@ -1824,7 +1821,17 @@ const Dust = (() => {
                         return acc + part + (res[i] || "");
                     }, "");
                 }
-                return new Class.Jsx(...res).exec();;
+                return new Class.Jsx(...res).exec();
+            }
+
+            exec(type) {
+                if (this.fetch) {
+                    return new Promise(async res => {
+                        this.template = await this.__include(this.template);
+                        res(this.__run(type));
+                    });
+                }
+                return this.__run(type);
             }
 
             __get(object) {
@@ -1882,7 +1889,7 @@ const Dust = (() => {
                     for (var i = 0; i < el.attributes.length; i++) {
                         var attr = el.attributes[i];
                         if (attr.value === "__code__joiner__") {
-                            props[attr.name] = (typeof opt.args[opt.current] == "string") ? opt.args[opt.current].trim() : opt.args[opt.current];
+                            props[attr.name] = (typeof opt.args[opt.current] === "string") ? opt.args[opt.current].trim() : opt.args[opt.current];
                             opt.current++;
                         } else {
                             props[attr.name] = attr.value.replace(/__code__joiner__/g, (_, s) => {

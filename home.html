@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/style/index.css" />
+    <title>Home page</title>
+    <style>
+        * {
+            direction: rtl;
+        }
+        
+        .clip {
+            filter: url("#clip");
+        }
+        
+        .clip span {
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0.5rem 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900">
+    <header class="bg-gray-800">
+        <div class="mx-auto p-4 container grid items-center grid-rows-1 grid-cols-1 lg:grid-cols-2">
+            <div class="w-full order-2 lg:order-1 mt-4 lg:mt-0 flex flex-col gap-4 lg:gap-8">
+                <h1 class="text-4xl lg:text-7xl font-black text-gray-50">ابحث عن عقارك المثالي للتأجير اليوم!</h1>
+                <p class="text-lg lg:text-xl text-gray-400">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio aspernatur aperiam aliquam doloribus quo, harum vel Distinctio aspernatur aperiam aliquam doloribus quo, harum vel
+                </p>
+                <a href="#" class="appearance-none w-max text-md flex items-center justify-center rounded-lg font-semibold p-2 px-4 text-gray-50 outline-none bg-yellow-500 hover:bg-yellow-400 focus:bg-yellow-400">
+                    <span>تصفح عقارات</span>
+                </a>
+            </div>
+            <div class="w-full overflow-hidden order-1 lg:order-2">
+                <div class="flex gap-4 lg:gap-6 p-4 lg:p-0 lg:pr-20 lg:py-6 -skew-y-6">
+                    <div id="main-slider-1" class="w-full overflow-hidden mt-10">
+                        <ul class="w-full flex flex-col duration-300 transition-all">
+                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-lg">
+                                <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover border-4 border-yellow-500 rounded-lg"
+                                />
+                            </li>
+                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-lg">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover border-4 border-yellow-500 rounded-lg" />
+                            </li>
+                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-lg">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover border-4 border-yellow-500 rounded-lg" />
+                            </li>
+                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-lg">
+                                <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover border-4 border-yellow-500 rounded-lg"
+                                />
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="main-slider-2" class="w-full overflow-hidden">
+                        <ul class="w-full flex flex-col duration-300 transition-all">
+                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-lg">
+                                <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover border-4 border-yellow-500 rounded-lg"
+                                />
+                            </li>
+                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-lg">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtLYNaJysNjBOFxFlVJclHAbCAUW2hRdp4_A&usqp=CAU" class="w-full h-full object-cover border-4 border-yellow-500 rounded-lg" />
+                            </li>
+                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-lg">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJxBbV1iNh8r0-3qjCJ2GMr0Dg9tmimXUB9A&usqp=CAU" class="w-full h-full object-cover border-4 border-yellow-500 rounded-lg" />
+                            </li>
+                            <li class="w-full aspect-square bg-gray-50 overflow-hidden rounded-lg">
+                                <img src="https://media.istockphoto.com/id/1351571961/photo/looking-directly-up-at-the-skyline-of-the-financial-district-in-central-london.jpg?b=1&s=170667a&w=0&k=20&c=ScoPcmVztzvi771qPgGSvhA50WDt7gOM7361Ei0ODww=" class="w-full h-full object-cover border-4 border-yellow-500 rounded-lg"
+                                />
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="mx-auto container p-4 my-12 lg:my-20">
+        <section class="w-full grid grid-rows-1 grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+            <a href="/detail.html" class="w-full relative overflow-hidden">
+                <div class="w-full border-4 border-yellow-500 rounded-lg aspect-video overflow-hidden">
+                    <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
+                    />
+                </div>
+                <div class="absolute flex inset-0 bg-gray-900 bg-opacity-50 p-4">
+                    <span class="w-max py-1 px-3 rounded-lg flex items-center text-gray-50 font-black text-lg bg-red-500 self-baseline">
+							مستأجرة
+						</span>
+                    <span class="w-max py-1 px-3 rounded-lg flex items-center text-gray-50 font-black text-lg bg-yellow-500 self-end mr-auto">
+							300$
+						</span>
+                </div>
+            </a>
+            <a href="/detail.html" class="w-full relative overflow-hidden">
+                <div class="w-full border-4 border-yellow-500 rounded-lg aspect-video overflow-hidden">
+                    <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
+                    />
+                </div>
+                <div class="absolute flex inset-0 bg-opacity-50 p-4">
+                    <span class="w-max py-1 px-3 rounded-lg flex items-center text-gray-50 font-black text-lg bg-yellow-500 self-end mr-auto">
+							300$
+						</span>
+                </div>
+            </a>
+            <a href="/detail.html" class="w-full relative overflow-hidden">
+                <div class="w-full border-4 border-yellow-500 rounded-lg aspect-video overflow-hidden">
+                    <img src="https://media.istockphoto.com/id/1409298953/photo/real-estate-agents-shake-hands-after-the-signing-of-the-contract-agreement-is-complete.jpg?b=1&s=170667a&w=0&k=20&c=41IYPuvIWQmDRUXdhWELlGb3IeQulHGQwRCJ_5MtgSo=" class="w-full h-full object-cover"
+                    />
+                </div>
+                <div class="absolute flex inset-0 bg-opacity-50 p-4">
+                    <span class="w-max py-1 px-3 rounded-lg flex items-center text-gray-50 font-black text-lg bg-yellow-500 self-end mr-auto">
+							300$
+						</span>
+                </div>
+            </a>
+            <svg class="hidden" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+					<defs>
+						<filter id="clip">
+							<feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
+							<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+							<feComposite in="SourceGraphic" in2="goo" operator="atop" />
+						</filter>
+					</defs>
+				</svg>
+        </section>
+    </main>
+    <script>
+        var $index_1 = {
+                value: 0,
+            },
+            $index_2 = {
+                value: 0,
+            };
+
+        function mediaMatch() {
+            return window.matchMedia("(min-width: 1024px)").matches;
+        }
+
+        function homeSlider(selector, index, pos) {
+            const container = document.querySelector(selector);
+            const list = container.querySelector("ul");
+            const length = list.children.length;
+            const items = list.children;
+            const cols = 2;
+            const gap = mediaMatch() ? 24 : 16;
+
+            container.style.height = container.clientWidth * cols + gap + "px";
+            list.style.gap = gap + "px";
+
+            if (pos) {
+                container.classList.add("-scale-y-100");
+                [...items].forEach((item) => {
+                    item.classList.add("-scale-y-100");
+                });
+            }
+
+            function slide() {
+                if (index.value >= length - cols) index.value = 0;
+                else index.value += 1;
+                if (length - index.value >= cols)
+                    list.style.marginTop = "-" + (index.value * container.clientWidth + (index.value == 0 ? 0 : gap * index.value - 1)) + "px";
+            }
+
+            const repeatOften = () => {
+                if (index.timer) clearTimeout(index.timer);
+                index.timer = setTimeout(() => {
+                    slide();
+                    requestAnimationFrame(repeatOften);
+                }, 5000);
+            };
+            requestAnimationFrame(repeatOften);
+        }
+
+        (function runSlide() {
+            window.addEventListener("resize", () => {
+                homeSlider("#main-slider-1", $index_1, true);
+                homeSlider("#main-slider-2", $index_2);
+            });
+            homeSlider("#main-slider-1", $index_1, true);
+            homeSlider("#main-slider-2", $index_2);
+        })();
+    </script>
+</body>
+
+</html>

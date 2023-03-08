@@ -12,8 +12,8 @@
         @import: url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap");
         
         {{ #if dark }}
-            $border-color: #0000001a;
-            $shadow-color: #ffffff;
+            $border-color: #0000001A;
+            $shadow-color: #F9FAFB;
         {{ #else }}
             $border-color: #00000010;
             $shadow-color: #00000040;
@@ -30,12 +30,12 @@
 
         .pos {
             &-1 {
-                left: 60%;
+                left: 64%;
                 top: 70%;
             }
             &-2 {
-                left: 5%;
-                top: 50%;
+                left: 10%;
+                top: 45%;
             }
             &-3 {
                 left: 80%;
@@ -43,7 +43,7 @@
             }
         }
         
-        .hov:hover {
+        .hover:hover {
             h1 {
                 color: rgb(168 85 247 / 1);
             }
@@ -52,26 +52,34 @@
             }
         }
         
-        .shad  > div {
-            box-shadow: 0px 10px 20px -20px $shadow-color;
+        .shadow  > {
+            div, a {
+                box-shadow: 0px 10px 20px -20px $shadow-color;
+            }
         }
         
-        .show {
+        .items {
             img {
                 object-position: center;
             }
-            div {
+            div, a {
                 border: 1px solid $border-color;
                 box-shadow: 0px 10px 20px -12px $shadow-color;
             }
         }
         
         @media.md {
-            .show div {
-                &:nth-of-type(odd) {
-                    position: relative;
-                    top: -2.5rem !important;
+            .items {
+                div, a {
+                    &:nth-of-type(odd) {
+                        position: relative;
+                        top: -2.5rem !important;
+                    }
                 }
+            }
+            .pos-2 {
+                left: 6%;
+                top: 42%;
             }
         }
 
@@ -81,9 +89,9 @@
 <body>
     <div id="code">
         <template>
-            <div class="{{ #if dark }} bg-gray-800 text-white {{ #else }} bg-gray-200 text-gray-900 {{ #/if }}">
+            <div class="{{ #if dark }} bg-gray-800 text-gray-50 {{ #else }} bg-gray-200 text-gray-900 {{ #/if }}">
                 {{ #import "header" }}
-                <main class="{{ #if dark }} bg-gray-900 {{ #else }} bg-white {{ #/if }} min-h-screen overflow-hidden">
+                <main class="{{ #if dark }} bg-gray-900 {{ #else }} bg-gray-50 {{ #/if }} min-h-screen overflow-hidden">
                     <div class="mx-auto container p-4 flex flex-col gap-12 md:gap-16 lg:gap-20 my-8 md:my-10 lg:my-14">
                         <section class="w-full flex flex-col gap-10 md:gap-24 overflow-hidden">
                             <div class="w-full flex gap-10 items-center justify-center flex-wrap">
@@ -264,9 +272,9 @@
                             </div>
                         </section>
                         <section class="w-full grid grid-rows-1 grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center">
-                            <div class="shad w-full order-2 md:order-1 flex flex-col gap-4 lg:gap-6">
+                            <div class="shadow w-full order-2 md:order-1 flex flex-col gap-4 lg:gap-6">
                                 {{ #each services as service }}
-                                    <div data-aos-offset="0" data-aos-delay="100" data-aos="zoom-in-up" class="hov {{ #if dark }} bg-gray-800 {{ #else }} bg-gray-200 {{ #/if }} rounded-xl p-6 lg:p-10 flex items-center justify-between gap-4">
+                                    <div data-aos-offset="0" data-aos-delay="100" data-aos="zoom-in-up" class="hover {{ #if dark }} bg-gray-800 {{ #else }} bg-gray-200 {{ #/if }} rounded-xl p-6 lg:p-10 flex items-center justify-between gap-4">
                                         <div class="flex flex-col gap-2">
                                             <h1 class="text-2xl">{{ @capitalize(service.name) }}</h1>
                                             <p class="text-gray-500">
@@ -289,7 +297,7 @@
                                     We possess a broad range of programming skills, including proficiency in multiple programming languages, frameworks, and libraries. 
                                     We are skilled in developing web applications from start to finish, including designing and implementing user interfaces, developing server-side logic, and building and maintaining databases.
                                 </p>
-                                <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="w-max font-semibold text-xl text-purple-500 border-2 border-purple-500 px-4 py-2 hover:bg-purple-400 hover:text-white focus:bg-purple-400 focus:text-white rounded-lg">
+                                <a data-aos-offset="0" data-aos="slide-up" href="mailto:{{ info.email }}" class="w-max font-semibold text-xl text-purple-500 border-2 border-purple-500 px-4 py-2 hover:bg-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:text-gray-50 rounded-lg">
                                     DOWNLOAD CV
                                 </a>
                             </div>
@@ -297,21 +305,22 @@
                         {{ #if @size(projects) }}
                             <section class="w-full flex flex-col gap-10">
                                 <h1 data-aos-offset="0" data-aos="fade-down" class="text-4xl md:text-6xl text-center">Latest Works</h1>
-                                <div class="show shad w-full mx-auto grid grid-rows-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:mt-16 justify-center flex-wrap">
+                                <div class="items shadow w-full mx-auto grid grid-rows-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:mt-16 justify-center flex-wrap">
                                     {{ #each projects as project }}
                                         {{ #if @loop.index < limit }}
-                                            <div
+                                            <a
+                                                href="{{ project.web || '#' }}"
                                                 data-aos-offset="0"
                                                 data-aos="flip-left"
                                                 class="w-full rounded-lg {{ #if dark }} bg-gray-800 {{ #else }} bg-gray-200 {{ #/if }} overflow-hidden"
                                             >
-                                                <img @click="{{ () => gotoLink(project.web) }}" src="{{ project.src }}" alt="{{ project.alt || 'project-' + @loop.round }}" class="block w-full object-cover aspect-square {{ project.web ? 'cursor-pointer' : ''}}" />
-                                            </div>
+                                                <img src="{{ project.src }}" alt="{{ project.alt || 'project-' + @loop.round }}" class="block w-full object-cover aspect-square" />
+                                            </a>
                                         {{ #/if }}
                                     {{ #/each }}
                                 </div>
                                 {{ #if @show-more() }}
-                                    <button @click="{{ loadProjects }}" class="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center mx-auto font-semibold text-xl text-purple-500 border-2 border-purple-500 hover:bg-purple-400 hover:text-white focus:bg-purple-400 focus:text-white rounded-full">
+                                    <button @click="{{ loadProjects }}" class="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center mx-auto font-semibold text-xl text-purple-500 border-2 border-purple-500 hover:bg-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:text-gray-50 rounded-full">
                                         <svg class="block h-6 w-6 md:h-10 md:w-10 pointer-events-none" fill="currentcolor" viewBox="0 96 960 960">
                                             {{ #if shrink }}
                                                 <path d="M251 699q-13-13-13.5-32t13.5-32l198-198q5-5 13.5-9t17.5-4q9 0 17.5 4t14.5 9l198 197q13 14 13 32.5T710 698q-14 13-33 13t-32-13L480 533 315 700q-13 13-31.5 12.5T251 699Z"/>
