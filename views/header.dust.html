@@ -6,7 +6,7 @@
         </div>
         <ul class="flex flex-row items-center gap-2 md:gap-4">
             <li data-aos-offset="0" data-aos="zoom-out-down" class="aos-init">
-                <a href="{{ info.social.linkedin }}" class="hover:text-purple-500">
+                <a href="{{ info.social.linkedin }}" class="hover:text-purple-500 duration-300 transition-colors">
                     <svg class="block h-6 w-6 md:h-10 md:w-10 pointer-events-none" fill="currentcolor" viewBox="0 0 64 64">
 						<path
 							d="M 48 8 L 16 8 C 11.582031 8 8 11.582031 8 16 L 8 48 C 8 52.417969 11.582031 56 16 56 L 48 56 C 52.417969 56 56 52.417969 56 48 L 56 16 C 56 11.582031 52.417969 8 48 8 Z M 24 47 L 19 47 L 19 27 L 24 27 Z M 24.027344 23.007812 C 23.382812 23.667969 22.539062 24 21.5 24 C 20.472656 24 19.636719 23.660156 18.980469 22.976562 C 18.328125 22.296875 18 21.457031 18 20.46875 C 18 19.449219 18.328125 18.617188 18.980469 17.96875 C 19.636719 17.324219 20.472656 17 21.5 17 C 22.539062 17 23.382812 17.324219 24.027344 17.96875 C 24.675781 18.613281 25 19.449219 25 20.46875 C 25 21.503906 24.675781 22.347656 24.027344 23.007812 Z M 47 47 L 42 47 L 42 35.886719 C 42 32.789062 40.214844 31 38 31 C 36.933594 31 35.726562 31.648438 35.035156 32.46875 C 34.34375 33.289062 34 34.332031 34 35.59375 L 34 47 L 29 47 L 29 27 L 34 27 L 34 30.164062 L 34.078125 30.164062 C 35.550781 27.730469 37.691406 26.519531 40.503906 26.511719 C 44.5 26.5 47 29.5 47 34.753906 Z M 47 47 "
@@ -15,7 +15,7 @@
                 </a>
             </li>
             <li data-aos-offset="0" data-aos="zoom-out-down" class="aos-init">
-                <a href="{{ info.social.github }}" class="hover:text-purple-500">
+                <a href="{{ info.social.github }}" class="hover:text-purple-500 duration-300 transition-colors">
                     <svg class="block h-6 w-6 md:h-10 md:w-10 pointer-events-none" fill="currentcolor" viewBox="0 0 48 48">
 						<path
 							d="M 24 24.238281 C 23.867188 24.238281 23.761719 24.132812 23.761719 24 C 23.761719 23.867188 23.867188 23.761719 24 23.761719 C 24.132812 23.761719 24.238281 23.867188 24.238281 24 C 24.238281 24.132812 24.132812 24.238281 24 24.238281 Z M 24 24.238281 "
@@ -27,7 +27,7 @@
                 </a>
             </li>
             <li>
-                <button @click="{{ toggleDarkMode }}" class="block hover:text-purple-500 p-2 rounded-full cursor-pointer {{ #if dark }} bg-gray-600 {{ #else }} bg-gray-50 {{ #/if }}">
+                <button @click="{{ toggleDarkMode }}" class="block hover:text-purple-500 p-2 rounded-full cursor-pointer {{ #if dark }} bg-gray-600 {{ #else }} bg-gray-50 {{ #/if }} duration-300 transition-colors">
 					<svg class="block h-6 w-6 md:h-10 md:w-10 pointer-events-none" fill="currentcolor" viewBox="0 0 48 48">
 						{{ #if dark }}
 						<path
@@ -44,7 +44,7 @@
         </ul>
     </nav>
     <div class="grid grid-rows-1 grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 py-4 md:py-8 items-center">
-        <div class="w-full flex flex-col gap-4 md:gap-8 order-2 md:order-1">
+        <div class="w-full flex flex-col gap-2 md:gap-4 order-2 md:order-1">
             <div>
                 <span data-aos-offset="0" data-aos="slide-right" class="rounded-md bg-purple-500 text-lg md:text-xl px-2 {{ #if dark }} text-gray-900 {{ #else }} text-gray-50 {{ #/if }}">
 					Hey! I’m Ahmed 👋
@@ -53,12 +53,14 @@
             <p data-aos-offset="0" data-aos="zoom-in-down" class="text-bold text-5xl lg:text-7xl xl:w-10/12">
                 Talk is cheap. <br /> Show me the code
             </p>
-            <p data-aos-offset="0" data-aos="zoom-in-right" class="text-xl text-gray-500">
+            <p data-aos-offset="0" data-aos="zoom-in-right" class="text-xl mt-2 text-gray-500">
                 I design and code beatifully simple things, <br /> and I love what I do.
             </p>
-            <a data-aos-offset="0" data-aos="zoom-in-up" href="mailto:{{ info.email }}" class="w-max font-semibold text-xl px-4 py-2 mt-3 text-purple-500 border-2 border-purple-500 hover:bg-purple-400 hover:border-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:border-purple-400 focus:text-gray-50 rounded-lg">
-				LET’S CHAT!
-			</a>
+            <div class="w-max mt-4" data-aos-offset="0" data-aos="zoom-in-up">
+                <a href="mailto:{{ info.email }}" class="w-max block font-semibold text-xl px-4 py-2 text-purple-500 border-2 border-purple-500 hover:bg-purple-400 hover:border-purple-400 hover:text-gray-50 focus:bg-purple-400 focus:border-purple-400 focus:text-gray-50 rounded-lg duration-300 transition-colors">
+					LET’S CHAT!
+				</a>
+            </div>
         </div>
         <div data-aos-offset="0" data-aos="zoom-out" class="relative w-full order-1 md:order-2">
             <span data-aos-offset="0" data-aos="fade-down" class="_pos-1 absolute block text-green-500 {{ #if dark }} bg-gray-600 {{ #else }} bg-gray-50 {{ #/if }} p-4 rounded-full shadow-xl">

@@ -649,6 +649,10 @@ video {
   margin-top: 1rem;
 }
 
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
 .block {
   display: block;
 }
@@ -898,6 +902,11 @@ video {
   border-color: rgb(234 179 8 / var(--tw-border-opacity));
 }
 
+.bg-blue-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity));
+}
+
 .bg-gray-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
@@ -941,11 +950,6 @@ video {
 .bg-yellow-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
-}
-
-.bg-blue-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(96 165 250 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-50 {
@@ -1138,6 +1142,20 @@ video {
   transition-duration: 150ms;
 }
 
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .duration-300 {
   transition-duration: 300ms;
 }
@@ -1162,14 +1180,14 @@ video {
   color: rgb(249 250 251 / var(--tw-text-opacity));
 }
 
-.hover\:text-purple-500:hover {
-  --tw-text-opacity: 1;
-  color: rgb(168 85 247 / var(--tw-text-opacity));
-}
-
 .hover\:text-purple-400:hover {
   --tw-text-opacity: 1;
   color: rgb(192 132 252 / var(--tw-text-opacity));
+}
+
+.hover\:text-purple-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(168 85 247 / var(--tw-text-opacity));
 }
 
 .focus\:border-purple-400:focus {
@@ -1369,10 +1387,6 @@ video {
 
   .lg\:w-16 {
     width: 4rem;
-  }
-
-  .lg\:w-2\/3 {
-    width: 66.666667%;
   }
 
   .lg\:w-20 {
