@@ -135,6 +135,20 @@ const Dust = (() => {
         static __MEMO = [];
         static __REFS = {};
         static __HELP = {
+            media: {
+                sm: () => {
+                    return window.matchMedia("(" + Class.Const.medias.sm.break+")").matches;
+                },
+                md: () => {
+                    return window.matchMedia("(" + Class.Const.medias.md.break+")").matches;
+                },
+                lg: () => {
+                    return window.matchMedia("(" + Class.Const.medias.lg.break+")").matches;
+                },
+                xl: () => {
+                    return window.matchMedia("(" + Class.Const.medias.xl.break+")").matches;
+                },
+            },
             capitalize: function(str) {
                 return (
                     (typeof str === "string" &&
@@ -1256,7 +1270,7 @@ const Dust = (() => {
         static __UPDT = [];
 
         get refs() {
-            return this.__get("__REFS");
+            return Class.__REFS;
         }
 
         constructor(container, style, state) {
@@ -1338,12 +1352,12 @@ const Dust = (() => {
 
         async __run() {
             if (this.style) {
-                const sass = new(this.__get("Preset"))(this.sass, this.state).exec("html");
-                this.style.textContent = new(this.__get("Sass"))(sass).exec();
+                const sass = new(Class.Preset)(this.sass, this.state).exec("html");
+                this.style.textContent = new(Class.Sass)(sass).exec();
             }
-            const tree = await new(this.__get("Preset"))(this.template, this.state, true).exec();
+            const tree = await new(Class.Preset)(this.template, this.state, true).exec();
             if (tree.children.length) {
-                if (!this.props) this.props = new(this.__get("Maker"))(this.container, tree);
+                if (!this.props) this.props = new(Class.Maker)(this.container, tree);
                 this.props.exec(tree);
                 this.constructor.__CONT = true;
                 this.constructor.__exec("__UPDT");
@@ -1367,10 +1381,6 @@ const Dust = (() => {
                 else requestAnimationFrame(repeatOften);
             }
             requestAnimationFrame(repeatOften);
-        }
-
-        __get(object) {
-            return this.constructor[object];
         }
 
         static Helper(name, fn) {
@@ -1400,12 +1410,12 @@ const Dust = (() => {
                 this.template = template.replace(new RegExp(/url\("(.*)"\)/g), (_, s) => {
                     return `url("${encodeURIComponent(s)}")`;
                 });
-                this.__get("Const").tree = [];
-                this.__get("Const").imports = [];
-                this.__get("Const").frames = [];
-                this.__get("Const").variables = [];
-                this.__get("Const").mixins = [];
-                this.__get("Const").medias = {
+                Class.Const.tree = [];
+                Class.Const.imports = [];
+                Class.Const.frames = [];
+                Class.Const.variables = [];
+                Class.Const.mixins = [];
+                Class.Const.medias = {
                     sm: {
                         break: "min-width:640px",
                         tree: []
@@ -1428,18 +1438,18 @@ const Dust = (() => {
             __object() {
                 const node = {};
                 let match = null;
-                this.template = this.template.replace(this.__get("Const").commentX, '');
-                while ((match = this.__get("Const").altX.exec(this.template)) != null) {
+                this.template = this.template.replace(Class.Const.commentX, '');
+                while ((match = Class.Const.altX.exec(this.template)) != null) {
                     if (!this.__empty(match[ /*selector*/ 2])) {
                         const name = match[ /*selector*/ 2].trim();
                         const newNode = this.__object(this.template);
-                        newNode["@position"] = String(this.__get("Const").count++);
+                        newNode["@position"] = String(Class.Const.sasscount++);
                         node[name] = newNode;
                     } else if (!this.__empty(match[ /*end*/ 3])) {
                         return node;
                     } else if (!this.__empty(match[ /*attr*/ 4])) {
                         const line = match[ /*attr*/ 4].trim();
-                        const attr = this.__get("Const").lineAttrX.exec(line);
+                        const attr = Class.Const.lineAttrX.exec(line);
                         if (attr) {
                             const name = attr[1].trim();
                             const value = attr[2].trim();
@@ -1459,7 +1469,7 @@ const Dust = (() => {
                         if (key === "@include") {
                             const names = csstree[key].split(",").map(e => e.trim());
                             names.forEach(name => {
-                                const object = this.__get("Const").mixins.find(e => e.name === name).properties;
+                                const object = Class.Const.mixins.find(e => e.name === name).properties;
                                 newtree = {
                                     ...newtree,
                                     ...this.__mixin(object)
@@ -1479,7 +1489,7 @@ const Dust = (() => {
                         csstree[key] = this.__variable(csstree[key]);
                     } else {
                         csstree[key] = csstree[key].replace(/\$([A-za-z0-9_-]+)/g, (_, s) => {
-                            return this.__get("Const").variables.find(e => e.name === s).value;
+                            return Class.Const.variables.find(e => e.name === s).value;
                         });
                     }
                 });
@@ -1517,13 +1527,13 @@ const Dust = (() => {
                 Object.keys(csstree).forEach(key => {
                     let found = false;
                     if (key[0] === "$") {
-                        this.__get("Const").variables.push({
+                        Class.Const.variables.push({
                             name: key.slice(1),
                             value: csstree[key],
                         });
                         found = true;
                     } else if (key.slice(1, 6) === "mixin") {
-                        this.__get("Const").mixins.push({
+                        Class.Const.mixins.push({
                             name: key.slice(6).trim(),
                             properties: {
                                 ...csstree[key]
@@ -1531,18 +1541,18 @@ const Dust = (() => {
                         });
                         found = true;
                     } else if (key.slice(1, 7) === "import") {
-                        this.__get("Const").imports.push(decodeURIComponent(csstree[key]));
+                        Class.Const.imports.push(decodeURIComponent(csstree[key]));
                         found = true;
                     }
                     if (found)
                         delete csstree[key];
                 });
-                this.__get("Const").tree = this.__variable(this.__mixin(csstree));
+                Class.Const.tree = this.__variable(this.__mixin(csstree));
             }
 
             __clean() {
                 const position = [];
-                this.__get("Const").tree = this.__get("Const").tree.sort((a, b) => {
+                Class.Const.tree = Class.Const.tree.sort((a, b) => {
                     const apos = parseInt(a.properties.find(e => e.name === "@position").value);
                     const bpos = parseInt(b.properties.find(e => e.name === "@position").value);
                     return apos - bpos;
@@ -1553,24 +1563,24 @@ const Dust = (() => {
                     return e;
                 }).filter(e => e.properties.length);
 
-                this.__get("Const").tree.forEach((tree, i) => {
+                Class.Const.tree.forEach((tree, i) => {
                     if (tree.selector[0].startsWith("@media.")) {
                         const _ = {},
                             con = tree.selector[0].split(" ")[0].slice(7);
                         _.selector = tree.selector.map(e => e.slice(10));
                         _.properties = tree.properties;
-                        this.__get("Const").medias[con].tree.push(_);
+                        Class.Const.medias[con].tree.push(_);
                         position.push(i);
                     }
                     if (tree.selector[0].startsWith("@frame")) {
                         const name = tree.selector[0].split(" ")[1];
-                        var found = this.__get("Const").frames.find(e => e.name === name);
+                        var found = Class.Const.frames.find(e => e.name === name);
                         if (!found) {
-                            this.__get("Const").frames.push({
+                            Class.Const.frames.push({
                                 name: name,
                                 tree: []
                             });
-                            found = this.__get("Const").frames[this.__get("Const").frames.length - 1];
+                            found = Class.Const.frames[Class.Const.frames.length - 1];
                         }
                         const _ = {};
                         _.selector = tree.selector.map(e => e.slice(7 + name.length).trim());
@@ -1580,18 +1590,18 @@ const Dust = (() => {
                     }
                 });
 
-                this.__get("Const").tree = this.__get("Const").tree.filter((_, i) => !position.includes(i));
+                Class.Const.tree = Class.Const.tree.filter((_, i) => !position.includes(i));
             }
 
             __parse() {
                 this.__extract();
-                const csstree = this.__get("Const").tree;
-                this.__get("Const").tree = [];
+                const csstree = Class.Const.tree;
+                Class.Const.tree = [];
                 Object.keys(csstree).forEach(key => {
                     const selector = key.split(",").map(e => e.trim());
-                    this.__get("Const").tree.push({
+                    Class.Const.tree.push({
                         selector: selector,
-                        properties: this.__property(csstree[key], selector, this.__get("Const").tree),
+                        properties: this.__property(csstree[key], selector, Class.Const.tree),
                     });
                 });
                 this.__clean();
@@ -1612,65 +1622,28 @@ const Dust = (() => {
 
             exec() {
                 this.__parse();
-                const stylesheet = [...this.__get("Const").imports.map(e => `@import ${e};`)];
-                this.__get("Const").tree.forEach(obj => {
+                const stylesheet = [...Class.Const.imports.map(e => `@import ${e};`)];
+                Class.Const.tree.forEach(obj => {
                     stylesheet.push(this.__string(obj));
                 });
 
-                this.__get("Const").frames.forEach(obj => {
+                Class.Const.frames.forEach(obj => {
                     stylesheet.push(`@keyframes ${obj.name} {${obj.tree.map(e => this.__string(e)).join("")}}`);
                 });
 
-                Object.keys(this.__get("Const").medias).forEach(key => {
-                    const curr = this.__get("Const").medias[key];
+                Object.keys(Class.Const.medias).forEach(key => {
+                    const curr = Class.Const.medias[key];
                     if (curr.tree.length)
                         stylesheet.push(`@media (${curr.break}) {${curr.tree.map(e => this.__string(e)).join("")}}`);
                 });
 
                 return stylesheet.join("");
             }
-
-            __get(object) {
-                return this.constructor[object];
-            }
-
-            static Const = class {
-                static count = 0;
-                static selX = /([^\s\;\{\}][^\;\{\}]*)\{/g;
-                static endX = /\}/g;
-                static lineX = /([^\;\{\}]*)\;/g;
-                static commentX = /\/\*[\s\S]*?\*\//g;
-                static lineAttrX = /([^\:]+):([^\;]*);/;
-                static altX = /(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim;
-                static tree = [];
-                static imports = [];
-                static frames = [];
-                static variables = [];
-                static mixins = [];
-                static medias = {
-                    sm: {
-                        break: "min-width:640px",
-                        tree: []
-                    },
-                    md: {
-                        break: "min-width:768px",
-                        tree: []
-                    },
-                    lg: {
-                        break: "min-width:1024px",
-                        tree: []
-                    },
-                    xl: {
-                        break: "min-width:1280px",
-                        tree: []
-                    },
-                }
-            };
         }
 
         static Preset = class {
             constructor(str, data = {}, fetch = false) {
-                this.template = str.replace(this.__get("Const").COMMENT_REG, "");
+                this.template = str.replace(Class.Const.COMMENT_REG, "");
                 this.data = data;
                 this.fetch = fetch;
             }
@@ -1736,11 +1709,11 @@ const Dust = (() => {
             }
 
             __place(str) {
-                str = str.replaceAll("@loop", "$LOOP");
-                str = str.replaceAll("@self", "$SELF");
-                str = str.replaceAll("@refs", $NAME + ".__REFS");
-                str = str.replaceAll(/\@(.*)\((.*)\)/g, (_, s, v) => $NAME + ".__HELP[\"" + s + "\"](" + v + ")");
-                str = str.replaceAll(/[.]+\w+/g, (e) => "['" + e.slice(1) + "']");
+                str = str.replaceAll(/(@loop)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, "$LOOP");
+                str = str.replaceAll(/(@self)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, "$SELF");
+                str = str.replaceAll(/(@refs)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, $NAME + ".__REFS");
+                str = str.replaceAll(/(@)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, $NAME + ".__HELP.");
+                str = str.replaceAll(/([.]+[\w\d-_]+)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, (e) => "['" + e.slice(1) + "']");
                 return str;
             }
 
@@ -1749,30 +1722,30 @@ const Dust = (() => {
                     txt: [],
                     jsx: [],
                 };
-                var state = this.__get("Const").OPEN_TAG;
-                str = this.__clean(str).replaceAll(this.__get("Const").COMMENT_REG, "");
+                var state = Class.Const.OPEN_TAG;
+                str = this.__clean(str).replaceAll(Class.Const.COMMENT_REG, "");
                 while (str.length) {
                     switch (state) {
-                        case this.__get("Const").OPEN_TAG:
-                            var index = str.indexOf(this.__get("Const").OPEN_TAG);
+                        case Class.Const.OPEN_TAG:
+                            var index = str.indexOf(Class.Const.OPEN_TAG);
                             if (index > -1) {
                                 var code = str.slice(0, index);
                                 if (["#js"].includes(data.jsx[data.jsx.length - 1])) data.jsx.push("<js:code>" + code);
                                 else data.txt.push(code);
                                 str = str.slice(index);
-                                state = this.__get("Const").CLSE_TAG;
+                                state = Class.Const.CLSE_TAG;
                             } else {
                                 str.length && data.txt.push(str);
                                 str = "";
                             }
-                        case this.__get("Const").CLSE_TAG:
-                            var index = str.indexOf(this.__get("Const").CLSE_TAG);
+                        case Class.Const.CLSE_TAG:
+                            var index = str.indexOf(Class.Const.CLSE_TAG);
                             if (index > -1) {
                                 index = this.__last(str, index);
                                 var code = str.slice(state.length, index).trim();
                                 data.jsx.push(code);
                                 str = str.slice(index + state.length);
-                                state = this.__get("Const").OPEN_TAG;
+                                state = Class.Const.OPEN_TAG;
                             } else {
                                 str.length && data.jsx.push(str);
                                 str = "";
@@ -1783,7 +1756,7 @@ const Dust = (() => {
             }
 
             __last(str, index) {
-                if (str[index + 2] === this.__get("Const").CLSE_TAG[0]) index = index + 1;
+                if (str[index + 2] === Class.Const.CLSE_TAG[0]) index = index + 1;
                 else return index;
                 return this.__last(str, index);
             }
@@ -1799,17 +1772,20 @@ const Dust = (() => {
                 return code;
             }
 
+            __bind(object) {
+                for (var fn in object) {
+                    if (typeof object[fn] === "function")
+                        object[fn] = object[fn].bind(this.data);
+                    else this.__bind(object[fn]);
+                }
+            }
+
             __run(type) {
                 const str = this.__token(this.template);
+                this.__bind(Class.__HELP);
                 const res = new Function(
                     "",
-                    "return function($SELF) { for(const fn in " +
-                    $NAME +
-                    ".__HELP){" +
-                    $NAME +
-                    ".__HELP[fn]=" +
-                    $NAME +
-                    ".__HELP[fn].bind($SELF)};" +
+                    "return function($SELF) {" +
                     "var $TXT = '', $JSX = [], $EACH = (obj, func) => {if (obj ===null) {return obj;}let index = -1;if (Array.isArray(obj)) {const length = obj.length;let count = 1;while (++index < length) {if (func(obj[index], {key: index,round: count,index: count - 1,}) === false) {break;}count++;}}let key = Object.keys(obj);const length = key.length;let count = 1;while (++index < length) {if (func(obj[key[index]], {key: key[index],round: count,index: count - 1,}) === false) {break;}count++;}}, $RANGE = (times, func) => {for (let i = 0; i < times; i++) {func({round: i + 1,index: i,});}};" +
                     " with($SELF || {}) { try {" +
                     str +
@@ -1849,10 +1825,10 @@ const Dust = (() => {
             }
 
             async __include(code) {
-                code = code.replace(this.__get("Const").COMMENT_REG, "");
+                code = code.replace(Class.Const.COMMENT_REG, "");
                 const matches = [];
                 code = code.replace(/{{\s*#import\s+['|"|`](.*?)['|"|`]\s*}}/g, (_, path) => {
-                    const hold = "___import__placement__code__" + (this.__get("Const").count++) + "___"
+                    const hold = "___import__placement__code__" + (Class.Const.presetcount++) + "___"
                     matches.push({
                         path,
                         hold
@@ -1866,14 +1842,6 @@ const Dust = (() => {
                 }
                 return code;
             }
-
-            static Const = class {
-                static IMPORTS_REG = /{{\s*#import\s+['|"|`](.*?)['|"|`]\s*}}/g;
-                static COMMENT_REG = /{{!--(.*?)--}}/gms;
-                static OPEN_TAG = "{{";
-                static CLSE_TAG = "}}";
-                static count = 0;
-            };
         };
 
         static Jsx = class {
@@ -1909,7 +1877,7 @@ const Dust = (() => {
                 [...el.childNodes].forEach(_ => {
                     this.__parse(_, children, opt);
                 });
-                stack.push(new(this.__get("TreeNode"))({
+                stack.push(new(Class.TreeNode)({
                     tag: el.tagName,
                     props: props,
                     children: children,
@@ -1928,26 +1896,6 @@ const Dust = (() => {
 
                 return (stack[0].tag = "template") && stack[0];
             }
-
-            __get(object) {
-                return this.constructor[object];
-            }
-
-            static TreeNode = class {
-                constructor(opt) {
-                    this.tag = opt.tag && opt.tag.toLowerCase() || "text";
-                    this.props = opt.props;
-                    this.children = opt.children;
-                }
-
-                isText() {
-                    return this.tag === "text";
-                }
-
-                isSvg() {
-                    return this.tag in Dust.Maker.Const.SVG_TAGS;
-                }
-            }
         };
 
         static Maker = class {
@@ -1959,9 +1907,9 @@ const Dust = (() => {
 
             __instance(fiber) {
                 const dom =
-                    fiber.tag === this.__get("Const").TEXT_ELEMENT ?
+                    fiber.tag === Class.Const.TEXT_ELEMENT ?
                     document.createTextNode("") :
-                    fiber.tag in this.__get("Const").SVG_TAGS ?
+                    fiber.tag in Class.Const.SVG_TAGS ?
                     document.createElementNS("http://www.w3.org/2000/svg", fiber.tag) :
                     document.createElement(fiber.tag);
                 dom.pocket = {};
@@ -1973,7 +1921,7 @@ const Dust = (() => {
                 for (const child of children) {
                     dom.appendChild(child.dom);
                 }
-                return new(this.__get("Instance"))({
+                return new(Class.Instance)({
                     dom,
                     fiber,
                     children,
@@ -2004,7 +1952,7 @@ const Dust = (() => {
                         continue;
                     }
                     const _ = dom && dom.tagName && dom.tagName.toLowerCase();
-                    const is_s = _ in this.__get("Const").SVG_TAGS;
+                    const is_s = _ in Class.Const.SVG_TAGS;
                     const is_o = prop.split(".").length > 1;
                     const is_r = prop === "ref";
                     const is_p = prop in dom;
@@ -2061,7 +2009,7 @@ const Dust = (() => {
                     const prop = Class.__kebab(key);
                     var cur = val[key];
                     if (Class.Verify.present(cur)) {
-                        Class.Verify.nbr(cur) && !(prop in this.__get("Const").STYLE_PROPS) && (cur += "px");
+                        Class.Verify.nbr(cur) && !(prop in Class.Const.STYLE_PROPS) && (cur += "px");
                         dom.style[prop] = cur;
                     }
                 }
@@ -2114,141 +2062,6 @@ const Dust = (() => {
                     first.remove();
                 }
             }
-
-            __get(object) {
-                return this.constructor[object];
-            }
-
-            static Const = class {
-                static TEXT_ELEMENT = "text"; //Symbol.for("TEXT_ELEMENT");
-
-                static SVG_TAGS = {
-                    svg: true,
-                    animate: true,
-                    animateMotion: true,
-                    animateTransform: true,
-                    circle: true,
-                    clipPath: true,
-                    defs: true,
-                    desc: true,
-                    discard: true,
-                    ellipse: true,
-                    feBlend: true,
-                    feColorMatrix: true,
-                    feComponentTransfer: true,
-                    feComposite: true,
-                    feConvolveMatrix: true,
-                    feDiffuseLighting: true,
-                    feDisplacementMap: true,
-                    feDistantLight: true,
-                    feDropShadow: true,
-                    feFlood: true,
-                    feFuncA: true,
-                    feFuncB: true,
-                    feFuncG: true,
-                    feFuncR: true,
-                    feGaussianBlur: true,
-                    feImage: true,
-                    feMerge: true,
-                    feMergeNode: true,
-                    feMorphology: true,
-                    feOffset: true,
-                    fePointLight: true,
-                    feSpecularLighting: true,
-                    feSpotLight: true,
-                    feTile: true,
-                    feTurbulence: true,
-                    filter: true,
-                    foreignObject: true,
-                    g: true,
-                    hatch: true,
-                    hatchpath: true,
-                    image: true,
-                    line: true,
-                    linearGradient: true,
-                    marker: true,
-                    mask: true,
-                    metadata: true,
-                    mpath: true,
-                    path: true,
-                    pattern: true,
-                    polygon: true,
-                    polyline: true,
-                    radialGradient: true,
-                    rect: true,
-                    script: true,
-                    set: true,
-                    stop: true,
-                    style: true,
-                    switch: true,
-                    symbol: true,
-                    text: true,
-                    textPath: true,
-                    title: true,
-                    tspan: true,
-                    use: true,
-                    view: true,
-                    animateColor: true,
-                    "missing-glyph": true,
-                    font: true,
-                    "font-face": true,
-                    "font-face-format": true,
-                    "font-face-name": true,
-                    "font-face-src": true,
-                    "font-face-uri": true,
-                    hkern: true,
-                    vkern: true,
-                    solidcolor: true,
-                    altGlyph: true,
-                    altGlyphDef: true,
-                    altGlyphItem: true,
-                    glyph: true,
-                    glyphRef: true,
-                    tref: true,
-                    cursor: true,
-                };
-
-                static STYLE_PROPS = {
-                    "animation-iteration-count": true,
-                    "border-image-slice": true,
-                    "border-image-width": true,
-                    "column-count": true,
-                    "counter-increment": true,
-                    "counter-reset": true,
-                    flex: true,
-                    "flex-grow": true,
-                    "flex-shrink": true,
-                    "font-size-adjust": true,
-                    "font-weight": true,
-                    "line-height": true,
-                    "nav-index": true,
-                    opacity: true,
-                    order: true,
-                    orphans: true,
-                    "tab-size": true,
-                    widows: true,
-                    "z-index": true,
-                    "pitch-range": true,
-                    richness: true,
-                    "speech-rate": true,
-                    stress: true,
-                    volume: true,
-                    "lood-opacity": true,
-                    "mask-box-outset": true,
-                    "mask-border-outset": true,
-                    "mask-box-width": true,
-                    "mask-border-width": true,
-                    "shape-image-threshold": true,
-                };
-            };
-
-            static Instance = class {
-                constructor(opt) {
-                    this.dom = opt.dom;
-                    this.fiber = opt.fiber;
-                    this.children = opt.children;
-                }
-            }
         };
 
         static Verify = class {
@@ -2299,6 +2112,190 @@ const Dust = (() => {
                 return !this.absent(element);
             };
         };
+
+        static Instance = class {
+            constructor(opt) {
+                this.dom = opt.dom;
+                this.fiber = opt.fiber;
+                this.children = opt.children;
+            }
+        }
+
+        static TreeNode = class {
+            constructor(opt) {
+                this.tag = opt.tag && opt.tag.toLowerCase() || "text";
+                this.props = opt.props;
+                this.children = opt.children;
+            }
+
+            isText() {
+                return this.tag === "text";
+            }
+
+            isSvg() {
+                return this.tag in Dust.Maker.Const.SVG_TAGS;
+            }
+        }
+
+        static Const = class {
+            static sasscount = 0;
+            static selX = /([^\s\;\{\}][^\;\{\}]*)\{/g;
+            static endX = /\}/g;
+            static lineX = /([^\;\{\}]*)\;/g;
+            static commentX = /\/\*[\s\S]*?\*\//g;
+            static lineAttrX = /([^\:]+):([^\;]*);/;
+            static altX = /(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim;
+            static tree = [];
+            static imports = [];
+            static frames = [];
+            static variables = [];
+            static mixins = [];
+            static medias = {
+                sm: {
+                    break: "min-width:640px",
+                    tree: []
+                },
+                md: {
+                    break: "min-width:768px",
+                    tree: []
+                },
+                lg: {
+                    break: "min-width:1024px",
+                    tree: []
+                },
+                xl: {
+                    break: "min-width:1280px",
+                    tree: []
+                },
+            };
+
+            static TEXT_ELEMENT = "text";
+
+            static SVG_TAGS = {
+                svg: true,
+                animate: true,
+                animateMotion: true,
+                animateTransform: true,
+                circle: true,
+                clipPath: true,
+                defs: true,
+                desc: true,
+                discard: true,
+                ellipse: true,
+                feBlend: true,
+                feColorMatrix: true,
+                feComponentTransfer: true,
+                feComposite: true,
+                feConvolveMatrix: true,
+                feDiffuseLighting: true,
+                feDisplacementMap: true,
+                feDistantLight: true,
+                feDropShadow: true,
+                feFlood: true,
+                feFuncA: true,
+                feFuncB: true,
+                feFuncG: true,
+                feFuncR: true,
+                feGaussianBlur: true,
+                feImage: true,
+                feMerge: true,
+                feMergeNode: true,
+                feMorphology: true,
+                feOffset: true,
+                fePointLight: true,
+                feSpecularLighting: true,
+                feSpotLight: true,
+                feTile: true,
+                feTurbulence: true,
+                filter: true,
+                foreignObject: true,
+                g: true,
+                hatch: true,
+                hatchpath: true,
+                image: true,
+                line: true,
+                linearGradient: true,
+                marker: true,
+                mask: true,
+                metadata: true,
+                mpath: true,
+                path: true,
+                pattern: true,
+                polygon: true,
+                polyline: true,
+                radialGradient: true,
+                rect: true,
+                script: true,
+                set: true,
+                stop: true,
+                style: true,
+                switch: true,
+                symbol: true,
+                text: true,
+                textPath: true,
+                title: true,
+                tspan: true,
+                use: true,
+                view: true,
+                animateColor: true,
+                "missing-glyph": true,
+                font: true,
+                "font-face": true,
+                "font-face-format": true,
+                "font-face-name": true,
+                "font-face-src": true,
+                "font-face-uri": true,
+                hkern: true,
+                vkern: true,
+                solidcolor: true,
+                altGlyph: true,
+                altGlyphDef: true,
+                altGlyphItem: true,
+                glyph: true,
+                glyphRef: true,
+                tref: true,
+                cursor: true,
+            };
+
+            static STYLE_PROPS = {
+                "animation-iteration-count": true,
+                "border-image-slice": true,
+                "border-image-width": true,
+                "column-count": true,
+                "counter-increment": true,
+                "counter-reset": true,
+                flex: true,
+                "flex-grow": true,
+                "flex-shrink": true,
+                "font-size-adjust": true,
+                "font-weight": true,
+                "line-height": true,
+                "nav-index": true,
+                opacity: true,
+                order: true,
+                orphans: true,
+                "tab-size": true,
+                widows: true,
+                "z-index": true,
+                "pitch-range": true,
+                richness: true,
+                "speech-rate": true,
+                stress: true,
+                volume: true,
+                "lood-opacity": true,
+                "mask-box-outset": true,
+                "mask-border-outset": true,
+                "mask-box-width": true,
+                "mask-border-width": true,
+                "shape-image-threshold": true,
+            };
+
+            static IMPORTS_REG = /{{\s*#import\s+['|"|`](.*?)['|"|`]\s*}}/g;
+            static COMMENT_REG = /{{!--(.*?)--}}/gms;
+            static OPEN_TAG = "{{";
+            static CLSE_TAG = "}}";
+            static presetcount = 0;
+        }
 
         static __kebab(str) {
             return str.replace(/([a-z])([A-Z])/g, (match) => match[0] + "-" + match[1]).toLowerCase();
