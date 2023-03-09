@@ -9,47 +9,53 @@
     <link rel="stylesheet" href="/assets/style/index.css" />
 </head>
 
-<body>
-    <div id="slider-container" class="rounded-md overflow-hidden w-full lg:w-2/3 h-screen mx-auto">
-        <ul id="slider-list">
+<body class="w-full h-screen flex items-center justify-center">
+    <div id="wrap" class="mx-auto">
+        <ul>
             <li>
-                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">1</div>
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400 rounded-md aspect-square">1</div>
             </li>
             <li>
-                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">2</div>
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400 rounded-md aspect-square">2</div>
             </li>
             <li>
-                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">3</div>
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400 rounded-md aspect-square">3</div>
             </li>
             <li>
-                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">4</div>
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400 rounded-md aspect-square">4</div>
             </li>
             <li>
-                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">5</div>
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400 rounded-md aspect-square">5</div>
             </li>
             <li>
-                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400">6</div>
+                <div class="w-full h-full text-6xl flex items-center justify-center bg-blue-400 rounded-md aspect-square">6</div>
             </li>
         </ul>
     </div>
-    <button id="left">left</button>
-    <button id="right">right</button>
     <script>
         const slider = function(els, opts = {}) {
+            var position,
+                action = 0;
             return new(function() {
                 this.wrap = typeof els.wrap === "string" ? document.querySelector(els.wrap) : els.wrap;
                 this.list = this.wrap.querySelector("ul");
+                this.wrap.style.overflow = "hidden";
                 this.list.style.display = "flex";
+                this.current = {
+                    value: 0
+                };
 
                 this.update = (opt = {}) => {
                     opts = {...opts,
                         ...opt
                     };
                     this.infinite = opts.infinite || false;
-                    this.pos = opts.pos || {
-                        value: 0,
-                    };
                     this.vert = opts.vert || false;
+                    this.auto = opts.auto || false;
+                    this.size = opts.size || false;
+                    this.flip = opts.flip || false;
+                    this.touch = opts.touch || false;
+                    this.time = opts.time || 5000;
                     this.move = opts.move || 1;
                     this.cols = opts.cols || 1;
                     this.gap = opts.gap || 0;
@@ -98,12 +104,16 @@
                             size: "clientHeight",
                             item: "height",
                             scroll: "scrollTop",
+                            pos: "clientY",
                         } :
                         {
                             size: "clientWidth",
                             item: "width",
                             scroll: "scrollLeft",
+                            pos: "clientX",
                         };
+
+                    this.size && (this.wrap.style[this.__opt.item] = this.size * this.cols + this.gap * (this.cols - 1) + "px");
 
                     this.list.style.width = "";
                     this.list.style.flexDirection = "";
@@ -122,46 +132,93 @@
                         this.items[i].style[this.__opt.item] = this.itemSize + "px";
                     }
 
-                    if (!this.__isLunched && this.pos.value === 0) {
-                        window.addEventListener("resize", this.update);
-                        this.pos.value = this.cols * this.move;
+                    if (!this.__isLunched && this.current.value === 0) {
+                        this.current.value = this.cols * this.move;
+                        window.onresize = this.update;
                         this.__isLunched = true;
                     }
 
                     this.wrap.style.scrollBehavior = "unset";
-                    this.wrap[this.__opt.scroll] = this.scrollLength * this.pos.value;
+                    this.wrap[this.__opt.scroll] = this.scrollLength * this.current.value;
                     this.wrap.style.scrollBehavior = "smooth";
+
+                    this.update.__auto && this.update.__auto();
+                    this.update.__touch && this.update.__touch();
+                };
+
+                this.update.__auto = () => {
+                    if (this.auto) {
+                        const repeatOften = () => {
+                            clearTimeout(this.__timer);
+                            this.__timer = setTimeout(() => {
+                                this.flip ? this.scrollPrev() : this.scrollNext();
+                                requestAnimationFrame(repeatOften);
+                            }, this.time);
+                        };
+                        requestAnimationFrame(repeatOften);
+                    }
+                };
+
+                this.update.__touch = () => {
+                    if (this.touch) {
+                        this.wrap.onpointerdown = (e) => {
+                            e.preventDefault();
+                            if (action == 0) {
+                                action = 1;
+                                position = e[this.__opt.pos];
+                            }
+                            this.wrap.onpointermove = (e) => {
+                                e.preventDefault();
+                                var fn;
+                                if (e[this.__opt.pos] > position) fn = this.scrollPrev;
+                                if (e[this.__opt.pos] < position) fn = this.scrollNext;
+                                if (action == 1) {
+                                    action = 2;
+                                    if (fn) {
+                                        this.update.__auto();
+                                        fn();
+                                    }
+                                }
+                            };
+                            this.wrap.onpointerup = (e) => {
+                                e.preventDefault();
+                                if (action == 2) action = 0;
+                                this.wrap.onpointermove = null;
+                                this.wrap.onpointerup = null;
+                            };
+                        };
+                    } else this.wrap.onpointerdown = null;
                 };
 
                 this.update();
 
                 this.scrollTo = () => {
-                    this.wrap[this.__opt.scroll] = this.scrollLength * this.pos.value;
+                    this.wrap[this.__opt.scroll] = this.scrollLength * this.current.value;
                 };
 
                 this.scrollNext = () => {
-                    if (this.pos.value >= this.length - this.cols) {
+                    if (this.current.value >= this.length - this.cols) {
                         if (this.infinite) {
                             this.wrap.style.scrollBehavior = "unset";
-                            this.pos.value = this.cols;
+                            this.current.value = this.cols;
                             this.scrollTo();
-                            this.pos.value += this.move;
+                            this.current.value += this.move;
                             this.wrap.style.scrollBehavior = "smooth";
-                        } else this.pos.value = 0;
-                    } else this.pos.value += this.move;
+                        } else this.current.value = 0;
+                    } else this.current.value += this.move;
                     this.scrollTo();
                 };
 
                 this.scrollPrev = () => {
-                    if (this.pos.value <= 0) {
+                    if (this.current.value <= 0) {
                         if (this.infinite) {
                             this.wrap.style.scrollBehavior = "unset";
-                            this.pos.value = this.length - this.cols - this.cols;
+                            this.current.value = this.length - this.cols - this.cols;
                             this.scrollTo();
-                            this.pos.value -= this.move;
+                            this.current.value -= this.move;
                             this.wrap.style.scrollBehavior = "smooth";
-                        } else this.pos.value = this.length - this.cols;
-                    } else this.pos.value -= this.move;
+                        } else this.current.value = this.length - this.cols;
+                    } else this.current.value -= this.move;
                     this.scrollTo();
                 };
 
@@ -174,34 +231,24 @@
                     this.next = typeof els.next === "string" ? document.querySelector(els.next) : els.next;
                     this.next.onclick = this.scrollNext;
                 }
+
+                this.update.__auto();
+                this.update.__touch();
             })();
         };
 
-        const idx = {
-            value: 0,
-        };
-
         const slide = slider({
-            wrap: "#slider-container",
-            prev: "#left",
-            next: "#right",
+            wrap: "#wrap",
         }, {
-            pos: idx,
             gap: 16,
             cols: 3,
-            move: 3,
-            vert: true,
+            size: 100,
+            auto: true,
+            time: 3000,
+            flip: true,
+            touch: true,
             infinite: true,
         });
-
-        const right = document.querySelector("#right");
-        const repeatOften = () => {
-            setTimeout(() => {
-                right.click();
-                requestAnimationFrame(repeatOften);
-            }, 3000);
-        };
-        requestAnimationFrame(repeatOften);
 
         // i < cols
         // len - i - 1
