@@ -42,7 +42,7 @@
                 this.wrap.style.overflow = "hidden";
                 this.list.style.display = "flex";
                 this.current = {
-                    value: 0
+                    value: 0,
                 };
 
                 this.update = (opt = {}) => {
@@ -67,7 +67,7 @@
                         const firsts = [...this.list.children].reduce((a, e, i) => {
                             if (i < this.cols) {
                                 const x = e.cloneNode(true);
-                                x.setAttribute("x-clone", true);
+                                x.setAttribute("x-clone", "");
                                 a.push(x);
                             }
                             return a;
@@ -75,7 +75,7 @@
                         const lasts = [...this.list.children].reduce((a, e, i) => {
                             if (i > len - this.cols - 1) {
                                 const x = e.cloneNode(true);
-                                x.setAttribute("x-clone", true);
+                                x.setAttribute("x-clone", "");
                                 a.push(x);
                             }
                             return a;
