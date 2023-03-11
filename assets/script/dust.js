@@ -2012,9 +2012,13 @@ const Dust = (() => {
     }
 
     class Preset {
+        static VARIABLES = {
+            reference: false,
+            helpers: "Preset.HELPERS"
+        };
         static MEMORY = [];
         static HELPERS = {
-            ...$HELP
+            ...($HELP || {})
         };
 
         constructor(str, data = {}, fetch = false) {
@@ -2087,8 +2091,9 @@ const Dust = (() => {
         __place(str) {
             str = str.replaceAll(/(@loop)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, "$LOOP");
             str = str.replaceAll(/(@self)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, "$SELF");
-            str = str.replaceAll(/(@refs)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, $NAME + ".Maker.REFERENCES");
-            str = str.replaceAll(/(@)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, $NAME + ".Preset.HELPERS.");
+            if (Preset.VARIABLES.reference)
+                str = str.replaceAll(/(@refs)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, Preset.VARIABLES.reference);
+            str = str.replaceAll(/(@)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, Preset.VARIABLES.helpers + ".");
             str = str.replaceAll(/([.]+[\w\d-_]+)(?=(?:[^'"`]|["'`][^'"`]*["'`])*$)/g, (e) => "['" + e.slice(1) + "']");
             return str;
         }
@@ -2526,6 +2531,8 @@ const Dust = (() => {
 
         constructor(container, style, state) {
             window[$NAME] = Class;
+            Preset.VARIABLES.reference = $NAME + ".Maker.REFERENCES";
+            Preset.VARIABLES.helpers = $NAME + ".Preset.HELPERS";
             const self = this;
             this.state = state;
             this.style = document.querySelector(style);
@@ -2654,6 +2661,49 @@ const Dust = (() => {
         static __exec(name) {
             const current = this[name];
             for (let fn of current) fn();
+        }
+    }
+
+    class Stringify {
+        constructor(src) {
+            if (this.type(src) !== "object") throw new Error("source must be an object");
+            this.src = src;
+        }
+
+        type(src) {
+            return Object.prototype.toString.call(src).slice(8, -1).toLowerCase();
+        }
+
+        test(obj) {
+            switch (this.type(obj)) {
+                case "number":
+                case "boolean":
+                case "undefined":
+                case "null":
+                    return obj;
+                case "function":
+                    return obj.toString();
+                case "array":
+                    return `[${obj.map(this.parse)}]`;
+                default:
+                    return `"${obj}"`;
+            }
+        }
+
+        parse(obj) {
+            var str = "{";
+            for (let name in obj) {
+                const cur = obj[name];
+                if (this.type(cur) === "object") str += `"${name}":${this.parse(cur)},`;
+                else {
+                    str += `"${name}":${this.test(cur)},`;
+                }
+            }
+            return str.slice(0, -1) + "}";
+        }
+
+        exec() {
+            return this.parse(this.src);
         }
     }
 
