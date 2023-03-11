@@ -1405,34 +1405,274 @@ const Dust = (() => {
             for (let fn of current) fn();
         }
 
+        // static Sass = class {
+        //     constructor(template) {
+        //         this.template = template.replace(new RegExp(/url\("(.*)"\)/g), (_, s) => {
+        //             return `url("${encodeURIComponent(s)}")`;
+        //         });
+        //         Class.Const.tree = [];
+        //         Class.Const.imports = [];
+        //         Class.Const.frames = [];
+        //         Class.Const.variables = [];
+        //         Class.Const.mixins = [];
+        //         Class.Const.medias = {
+        //             sm: {
+        //                 break: "min-width:640px",
+        //                 tree: []
+        //             },
+        //             md: {
+        //                 break: "min-width:768px",
+        //                 tree: []
+        //             },
+        //             lg: {
+        //                 break: "min-width:1024px",
+        //                 tree: []
+        //             },
+        //             xl: {
+        //                 break: "min-width:1280px",
+        //                 tree: []
+        //             },
+        //         }
+        //     }
+
+        //     __object() {
+        //         const node = {};
+        //         let match = null;
+        //         this.template = this.template.replace(Class.Const.commentX, '');
+        //         while ((match = Class.Const.altX.exec(this.template)) != null) {
+        //             if (!this.__empty(match[ /*selector*/ 2])) {
+        //                 const name = match[ /*selector*/ 2].trim();
+        //                 const newNode = this.__object(this.template);
+        //                 newNode["@position"] = String(Class.Const.sasscount++);
+        //                 node[name] = newNode;
+        //             } else if (!this.__empty(match[ /*end*/ 3])) {
+        //                 return node;
+        //             } else if (!this.__empty(match[ /*attr*/ 4])) {
+        //                 const line = match[ /*attr*/ 4].trim();
+        //                 const attr = Class.Const.lineAttrX.exec(line);
+        //                 if (attr) {
+        //                     const name = attr[1].trim();
+        //                     const value = attr[2].trim();
+        //                     node[name] = value;
+        //                 }
+        //             }
+        //         }
+        //         return node;
+        //     }
+
+        //     __mixin(csstree) {
+        //         var newtree = {};
+        //         Object.keys(csstree).forEach(key => {
+        //             if (typeof csstree[key] === "object") {
+        //                 newtree[key] = this.__mixin(csstree[key]);
+        //             } else {
+        //                 if (key === "@include") {
+        //                     const names = csstree[key].split(",").map(e => e.trim());
+        //                     names.forEach(name => {
+        //                         const object = Class.Const.mixins.find(e => e.name === name).properties;
+        //                         newtree = {
+        //                             ...newtree,
+        //                             ...this.__mixin(object)
+        //                         };
+        //                     });
+        //                 } else {
+        //                     newtree[key] = csstree[key];
+        //                 }
+        //             }
+        //         });
+        //         return newtree;
+        //     }
+
+        //     __variable(csstree) {
+        //         Object.keys(csstree).forEach(key => {
+        //             if (typeof csstree[key] === "object") {
+        //                 csstree[key] = this.__variable(csstree[key]);
+        //             } else {
+        //                 csstree[key] = csstree[key].replace(/\$([A-za-z0-9_-]+)/g, (_, s) => {
+        //                     return Class.Const.variables.find(e => e.name === s).value;
+        //                 });
+        //             }
+        //         });
+        //         return csstree
+        //     }
+
+        //     __property(csstree, parent, newtree) {
+        //         const properties = [];
+        //         Object.keys(csstree).forEach(key => {
+        //             if (typeof csstree[key] === "object") {
+        //                 var _ = [];
+        //                 const selector = key.split(",").map(e => e.trim());
+        //                 for (let i = 0; i < parent.length; i++) {
+        //                     for (let j = 0; j < selector.length; j++) {
+        //                         const text = parent[i] + (selector[j][0] === "&" ? selector[j].substr(1) : " " + selector[j]);
+        //                         _.push(text);
+        //                     }
+        //                 }
+        //                 newtree.push({
+        //                     selector: _,
+        //                     properties: this.__property(csstree[key], _, newtree)
+        //                 });
+        //             } else {
+        //                 if (Class.Const.CSS_MAP.includes(key)) {
+        //                     Class.Const.CSS_VARS.forEach(_var => {
+        //                         properties.push({
+        //                             name: _var + key,
+        //                             value: csstree[key],
+        //                         })
+        //                     });
+        //                 }
+        //                 properties.push({
+        //                     name: key,
+        //                     value: csstree[key],
+        //                 })
+        //             }
+        //         });
+        //         return properties;
+        //     }
+
+        //     __extract() {
+        //         const csstree = this.__object();
+        //         Object.keys(csstree).forEach(key => {
+        //             let found = false;
+        //             if (key[0] === "$") {
+        //                 Class.Const.variables.push({
+        //                     name: key.slice(1),
+        //                     value: csstree[key],
+        //                 });
+        //                 found = true;
+        //             } else if (key.slice(1, 6) === "mixin") {
+        //                 Class.Const.mixins.push({
+        //                     name: key.slice(6).trim(),
+        //                     properties: {
+        //                         ...csstree[key]
+        //                     }
+        //                 });
+        //                 found = true;
+        //             } else if (key.slice(1, 7) === "import") {
+        //                 Class.Const.imports.push(decodeURIComponent(csstree[key]));
+        //                 found = true;
+        //             }
+        //             if (found)
+        //                 delete csstree[key];
+        //         });
+        //         Class.Const.tree = this.__variable(this.__mixin(csstree));
+        //     }
+
+        //     __clean() {
+        //         const position = [];
+        //         Class.Const.tree = Class.Const.tree.sort((a, b) => {
+        //             const apos = parseInt(a.properties.find(e => e.name === "@position").value);
+        //             const bpos = parseInt(b.properties.find(e => e.name === "@position").value);
+        //             return apos - bpos;
+        //         }).map(e => {
+        //             var position = e.properties.find(e => e.name === "@position");
+        //             position = e.properties.indexOf(position);
+        //             e.properties.splice(position, 1);
+        //             return e;
+        //         }).filter(e => e.properties.length);
+
+        //         Class.Const.tree.forEach((tree, i) => {
+        //             if (tree.selector[0].startsWith("@media.")) {
+        //                 const _ = {},
+        //                     con = tree.selector[0].split(" ")[0].slice(7);
+        //                 _.selector = tree.selector.map(e => e.slice(10));
+        //                 _.properties = tree.properties;
+        //                 Class.Const.medias[con].tree.push(_);
+        //                 position.push(i);
+        //             }
+        //             if (tree.selector[0].startsWith("@frame")) {
+        //                 const name = tree.selector[0].split(" ")[1];
+        //                 var found = Class.Const.frames.find(e => e.name === name);
+        //                 if (!found) {
+        //                     Class.Const.frames.push({
+        //                         name: name,
+        //                         _uid: Class.__uid(10),
+        //                         tree: []
+        //                     });
+        //                     found = Class.Const.frames[Class.Const.frames.length - 1];
+        //                 }
+        //                 const _ = {};
+        //                 _.selector = tree.selector.map(e => e.slice(7 + name.length).trim());
+        //                 _.properties = tree.properties;
+        //                 found.tree.push(_);
+        //                 position.push(i);
+        //             }
+        //         });
+
+        //         Class.Const.tree = Class.Const.tree.filter((_, i) => !position.includes(i));
+        //     }
+
+        //     __frame() {
+        //         Class.Const.tree.forEach(tree => {
+        //             tree.properties.forEach(property => {
+        //                 property.value = property.value.replace(/@frame.([\w\d-_.]+)/g, (_, s) => {
+        //                     const frame = Class.Const.frames.find(e => e.name === s);
+        //                     return frame._uid;
+        //                 });
+        //             });
+        //         });
+        //     }
+
+        //     __parse() {
+        //         this.__extract();
+        //         const csstree = Class.Const.tree;
+        //         Class.Const.tree = [];
+        //         Object.keys(csstree).forEach(key => {
+        //             const selector = key.split(",").map(e => e.trim());
+        //             Class.Const.tree.push({
+        //                 selector: selector,
+        //                 properties: this.__property(csstree[key], selector, Class.Const.tree),
+        //             });
+        //         });
+        //         this.__clean();
+        //     }
+
+        //     __empty(str) {
+        //         return typeof str === 'undefined' || str.length === 0 || str === null;
+        //     }
+
+        //     __string(object) {
+        //         var str = `${object.selector.join()}{`;
+        //         Object.keys(object.properties).forEach(key => {
+        //             const current = object.properties[key];
+        //             str += `${current.name}:${current.value};`;
+        //         });
+        //         return str && (str += "}");
+        //     }
+
+        //     exec() {
+        //         this.__parse();
+        //         this.__frame();
+        //         const stylesheet = [...Class.Const.imports.map(e => `@import ${e};`)];
+        //         Class.Const.tree.forEach(obj => {
+        //             stylesheet.push(this.__string(obj));
+        //         });
+
+        //         Class.Const.frames.forEach(obj => {
+        //             stylesheet.push(...["", ...Class.Const.CSS_VARS].map(frame => `@${frame}keyframes ${obj._uid}{${obj.tree.map(e => this.__string(e)).join("")}}`));
+        //         });
+
+        //         Object.keys(Class.Const.medias).forEach(key => {
+        //             const curr = Class.Const.medias[key];
+        //             if (curr.tree.length)
+        //                 stylesheet.push(`@media (${curr.break}) {${curr.tree.map(e => this.__string(e)).join("")}}`);
+        //         });
+
+        //         return stylesheet.join("");
+        //     }
+        // }
+
         static Sass = class {
             constructor(template) {
                 this.template = template.replace(new RegExp(/url\("(.*)"\)/g), (_, s) => {
                     return `url("${encodeURIComponent(s)}")`;
                 });
-                Class.Const.tree = [];
-                Class.Const.imports = [];
-                Class.Const.frames = [];
-                Class.Const.variables = [];
-                Class.Const.mixins = [];
-                Class.Const.medias = {
-                    sm: {
-                        break: "min-width:640px",
-                        tree: []
-                    },
-                    md: {
-                        break: "min-width:768px",
-                        tree: []
-                    },
-                    lg: {
-                        break: "min-width:1024px",
-                        tree: []
-                    },
-                    xl: {
-                        break: "min-width:1280px",
-                        tree: []
-                    },
-                }
+                this.tree = [];
+                this.imports = [];
+                this.frames = [];
+                this.variables = [];
+                this.mixins = [];
+                this.medias = [];
             }
 
             __object() {
@@ -1469,7 +1709,7 @@ const Dust = (() => {
                         if (key === "@include") {
                             const names = csstree[key].split(",").map(e => e.trim());
                             names.forEach(name => {
-                                const object = Class.Const.mixins.find(e => e.name === name).properties;
+                                const object = this.mixins.find(e => e.name === name).properties;
                                 newtree = {
                                     ...newtree,
                                     ...this.__mixin(object)
@@ -1489,7 +1729,20 @@ const Dust = (() => {
                         csstree[key] = this.__variable(csstree[key]);
                     } else {
                         csstree[key] = csstree[key].replace(/\$([A-za-z0-9_-]+)/g, (_, s) => {
-                            return Class.Const.variables.find(e => e.name === s).value;
+                            return this.variables.find(e => e.name === s).value;
+                        });
+                    }
+                });
+                return csstree
+            }
+
+            __frame(csstree) {
+                Object.keys(csstree).forEach(key => {
+                    if (typeof csstree[key] === "object") {
+                        csstree[key] = this.__frame(csstree[key]);
+                    } else {
+                        csstree[key] = csstree[key].replace(/\@frames.([A-za-z0-9_-]+)/g, (_, s) => {
+                            return this.frames.find(e => e.name === s).unique;
                         });
                     }
                 });
@@ -1513,6 +1766,14 @@ const Dust = (() => {
                             properties: this.__property(csstree[key], _, newtree)
                         });
                     } else {
+                        if (Class.Const.CSS_MAP.includes(key)) {
+                            Class.Const.CSS_VARS.forEach(_var => {
+                                properties.push({
+                                    name: _var + key,
+                                    value: csstree[key],
+                                })
+                            });
+                        }
                         properties.push({
                             name: key,
                             value: csstree[key],
@@ -1527,32 +1788,55 @@ const Dust = (() => {
                 Object.keys(csstree).forEach(key => {
                     let found = false;
                     if (key[0] === "$") {
-                        Class.Const.variables.push({
+                        this.variables.push({
                             name: key.slice(1),
                             value: csstree[key],
                         });
                         found = true;
+                    } else if (key.slice(1, 7) === "import") {
+                        this.imports.push(decodeURIComponent(csstree[key]));
+                        found = true;
                     } else if (key.slice(1, 6) === "mixin") {
-                        Class.Const.mixins.push({
+                        this.mixins.push({
                             name: key.slice(6).trim(),
                             properties: {
                                 ...csstree[key]
                             }
                         });
                         found = true;
-                    } else if (key.slice(1, 7) === "import") {
-                        Class.Const.imports.push(decodeURIComponent(csstree[key]));
+                    } else if (key.slice(1, 7) === "media.") {
+                        this.medias.push({
+                            name: Class.Const.breaks[key.slice(7).trim()],
+                            properties: {
+                                ...csstree[key]
+                            }
+                        });
+                        found = true;
+                    } else if (key.slice(1, 6) === "frame") {
+                        this.frames.push({
+                            name: key.slice(6).trim(),
+                            unique: Class.__uid(10),
+                            properties: {
+                                ...csstree[key]
+                            }
+                        });
                         found = true;
                     }
                     if (found)
                         delete csstree[key];
                 });
-                Class.Const.tree = this.__variable(this.__mixin(csstree));
+                this.tree = this.__frame(this.__variable(this.__mixin(csstree)));
+                this.frames.forEach(frame => {
+                    frame.properties = this.__frame(this.__variable(this.__mixin(frame.properties)));
+                });
+                this.medias.forEach(media => {
+                    media.properties = this.__frame(this.__variable(this.__mixin(media.properties)));
+                });
             }
 
-            __clean() {
-                const position = [];
-                Class.Const.tree = Class.Const.tree.sort((a, b) => {
+            __clean(tree) {
+                tree = tree.filter(e => e.selector[0] !== "@position");
+                return tree.sort((a, b) => {
                     const apos = parseInt(a.properties.find(e => e.name === "@position").value);
                     const bpos = parseInt(b.properties.find(e => e.name === "@position").value);
                     return apos - bpos;
@@ -1562,49 +1846,18 @@ const Dust = (() => {
                     e.properties.splice(position, 1);
                     return e;
                 }).filter(e => e.properties.length);
-
-                Class.Const.tree.forEach((tree, i) => {
-                    if (tree.selector[0].startsWith("@media.")) {
-                        const _ = {},
-                            con = tree.selector[0].split(" ")[0].slice(7);
-                        _.selector = tree.selector.map(e => e.slice(10));
-                        _.properties = tree.properties;
-                        Class.Const.medias[con].tree.push(_);
-                        position.push(i);
-                    }
-                    if (tree.selector[0].startsWith("@frame")) {
-                        const name = tree.selector[0].split(" ")[1];
-                        var found = Class.Const.frames.find(e => e.name === name);
-                        if (!found) {
-                            Class.Const.frames.push({
-                                name: name,
-                                tree: []
-                            });
-                            found = Class.Const.frames[Class.Const.frames.length - 1];
-                        }
-                        const _ = {};
-                        _.selector = tree.selector.map(e => e.slice(7 + name.length).trim());
-                        _.properties = tree.properties;
-                        found.tree.push(_);
-                        position.push(i);
-                    }
-                });
-
-                Class.Const.tree = Class.Const.tree.filter((_, i) => !position.includes(i));
             }
 
-            __parse() {
-                this.__extract();
-                const csstree = Class.Const.tree;
-                Class.Const.tree = [];
-                Object.keys(csstree).forEach(key => {
+            __parse(tree) {
+                const csstree = [];
+                Object.keys(tree).forEach(key => {
                     const selector = key.split(",").map(e => e.trim());
-                    Class.Const.tree.push({
+                    csstree.push({
                         selector: selector,
-                        properties: this.__property(csstree[key], selector, Class.Const.tree),
+                        properties: this.__property(tree[key], selector, csstree),
                     });
                 });
-                this.__clean();
+                return this.__clean(csstree);
             }
 
             __empty(str) {
@@ -1621,20 +1874,25 @@ const Dust = (() => {
             }
 
             exec() {
-                this.__parse();
-                const stylesheet = [...Class.Const.imports.map(e => `@import ${e};`)];
-                Class.Const.tree.forEach(obj => {
+                this.__extract();
+                this.tree = this.__parse(this.tree);
+                this.medias.forEach(media => {
+                    media.properties = this.__parse(media.properties);
+                });
+                this.frames.forEach(frame => {
+                    frame.properties = this.__parse(frame.properties);
+                });
+                const stylesheet = [...this.imports.map(e => `@import ${e};`)];
+                this.tree.forEach(obj => {
                     stylesheet.push(this.__string(obj));
                 });
 
-                Class.Const.frames.forEach(obj => {
-                    stylesheet.push(`@keyframes ${obj.name} {${obj.tree.map(e => this.__string(e)).join("")}}`);
+                this.frames.forEach(obj => {
+                    stylesheet.push(...["", ...Class.Const.CSS_VARS].map(frame => `@${frame}keyframes ${obj.unique}{${obj.properties.map(e => this.__string(e)).join("")}}`));
                 });
 
-                Object.keys(Class.Const.medias).forEach(key => {
-                    const curr = Class.Const.medias[key];
-                    if (curr.tree.length)
-                        stylesheet.push(`@media (${curr.break}) {${curr.tree.map(e => this.__string(e)).join("")}}`);
+                this.medias.forEach(obj => {
+                    stylesheet.push(`@media(${obj.name}) {${obj.properties.map(e => this.__string(e)).join("")}}`);
                 });
 
                 return stylesheet.join("");
@@ -2145,29 +2403,34 @@ const Dust = (() => {
             static commentX = /\/\*[\s\S]*?\*\//g;
             static lineAttrX = /([^\:]+):([^\;]*);/;
             static altX = /(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim;
-            static tree = [];
-            static imports = [];
-            static frames = [];
-            static variables = [];
-            static mixins = [];
-            static medias = {
-                sm: {
-                    break: "min-width:640px",
-                    tree: []
-                },
-                md: {
-                    break: "min-width:768px",
-                    tree: []
-                },
-                lg: {
-                    break: "min-width:1024px",
-                    tree: []
-                },
-                xl: {
-                    break: "min-width:1280px",
-                    tree: []
-                },
+            static breaks = {
+                sm: "min-width:640px",
+                md: "min-width:768px",
+                lg: "min-width:1024px",
+                xl: "min-width:1280px",
             };
+            // static medias = {
+            //     sm: {
+            //         break: "min-width:640px",
+            //         tree: []
+            //     },
+            //     md: {
+            //         break: "min-width:768px",
+            //         tree: []
+            //     },
+            //     lg: {
+            //         break: "min-width:1024px",
+            //         tree: []
+            //     },
+            //     xl: {
+            //         break: "min-width:1280px",
+            //         tree: []
+            //     },
+            // };
+
+            static CSS_VARS = ["-o-", "-ms-", "-moz-", /* "-epub-", "-khtml-", "-apple-", */ "-webkit-"]
+
+            static CSS_MAP = ["align-content", "align-items", "align-self", "animation", "animation-delay", "animation-direction", "animation-duration", "animation-fill-mode", "animation-iteration-count", "animation-name", "animation-play-state", "animation-timing-function", "app-region", "appearance", "aspect-ratio", "backface-visibility", "background-clip", "background-composite", "background-origin", "background-size", "border-after", "border-after-color", "border-after-style", "border-after-width", "border-before", "border-before-color", "border-before-style", "border-before-width", "border-bottom-left-radius", "border-bottom-right-radius", "border-end", "border-end-color", "border-end-style", "border-end-width", "border-fit", "border-horizontal-spacing", "border-image", "border-radius", "border-start", "border-start-color", "border-start-style", "border-start-width", "border-top-left-radius", "border-top-right-radius", "border-vertical-spacing", "box-align", "box-decoration-break", "box-direction", "box-flex", "box-flex-group", "box-lines", "box-ordinal-group", "box-orient", "box-pack", "box-reflect", "box-shadow", "box-sizing", "clip-path", "column-break-after", "column-break-before", "column-break-inside", "column-count", "column-gap", "column-rule", "column-rule-color", "column-rule-style", "column-rule-width", "column-span", "column-width", "columns", "filter", "flex", "flex-basis", "flex-direction", "flex-flow", "flex-grow", "flex-shrink", "flex-wrap", "font-feature-settings", "font-size-delta", "font-smoothing", "highlight", "hyphenate-character", "justify-content", "line-box-contain", "line-break", "line-clamp", "locale", "logical-height", "logical-width", "margin-after", "margin-after-collapse", "margin-before", "margin-before-collapse", "margin-bottom-collapse", "margin-collapse", "margin-end", "margin-start", "margin-top-collapse", "mask", "mask-box-image", "mask-box-image-outset", "mask-box-image-repeat", "mask-box-image-slice", "mask-box-image-source", "mask-box-image-width", "mask-clip", "mask-composite", "mask-image", "mask-origin", "mask-position", "mask-position-x", "mask-position-y", "mask-repeat", "mask-repeat-x", "mask-repeat-y", "mask-size", "max-logical-height", "max-logical-width", "min-logical-height", "min-logical-width", "opacity", "order", "padding-after", "padding-before", "padding-end", "padding-start", "perspective", "perspective-origin", "perspective-origin-x", "perspective-origin-y", "print-color-adjust", "rtl-ordering", "ruby-position", "shape-image-threshold", "shape-margin", "shape-outside", "tap-highlight-color", "text-combine", "text-decorations-in-effect", "text-emphasis", "text-emphasis-color", "text-emphasis-position", "text-emphasis-style", "text-fill-color", "text-orientation", "text-security", "text-size-adjust", "text-stroke", "text-stroke-color", "text-stroke-width", "transform", "transform-origin", "transform-origin-x", "transform-origin-y", "transform-origin-z", "transform-style", "transition", "transition-delay", "transition-duration", "transition-property", "transition-timing-function", "user-drag", "user-modify", "user-select", "writing-mode", "alt", "animation-trigger", "backdrop-filter", "color-correction", "column-axis", "column-fill", "column-progression", "cursor-visibility", "dashboard-region", "flow-from", "flow-into", "font-kerning", "font-variant-ligatures", "grid", "grid-area", "grid-auto-columns", "grid-auto-flow", "grid-auto-rows", "grid-column", "grid-column-end", "grid-column-gap", "grid-column-start", "grid-gap", "grid-row", "grid-row-end", "grid-row-gap", "grid-row-start", "grid-template", "grid-template-areas", "grid-template-columns", "grid-template-rows", "hyphenate-limit-after", "hyphenate-limit-before", "hyphenate-limit-lines", "hyphens", "initial-letter", "justify-items", "justify-self", "line-align", "line-grid", "line-snap", "marquee", "marquee-direction", "marquee-increment", "marquee-repetition", "marquee-speed", "marquee-style", "mask-source-type", "nbsp-mode", "overflow-scrolling", "region-break-after", "region-break-before", "region-break-inside", "region-fragment", "scroll-snap-coordinate", "scroll-snap-destination", "scroll-snap-points-x", "scroll-snap-points-y", "scroll-snap-type", "svg-shadow", "text-align-last", "text-decoration", "text-decoration-color", "text-decoration-line", "text-decoration-skip", "text-decoration-style", "text-justify", "text-underline-position", "text-zoom", "touch-callout", "binding", "border-bottom-colors", "border-left-colors", "border-right-colors", "border-top-colors", "control-character-visibility", "float-edge", "force-broken-image-icon", "image-region", "math-display", "math-variant", "min-font-size-ratio", "orient", "osx-font-smoothing", "outline-radius", "outline-radius-bottomleft", "outline-radius-bottomright", "outline-radius-topleft", "outline-radius-topright", "script-level", "script-min-size", "script-size-multiplier", "stack-sizing", "tab-size", "top-layer", "user-focus", "user-input", "window-dragging", "window-shadow", "accelerator", "background-position-x", "background-position-y", "behavior", "block-progression", "content-zoom-chaining", "content-zoom-limit", "content-zoom-limit-max", "content-zoom-limit-min", "content-zoom-snap", "content-zoom-snap-points", "content-zoom-snap-type", "content-zooming", "flex-align", "flex-item-align", "flex-line-pack", "flex-negative", "flex-order", "flex-pack", "flex-positive", "flex-preferred-size", "grid-column-align", "grid-column-span", "grid-columns", "grid-row-align", "grid-row-span", "grid-rows", "high-contrast-adjust", "hyphenate-limit-chars", "hyphenate-limit-zone", "ime-align", "ime-mode", "interpolation-mode", "layout-flow", "layout-grid", "layout-grid-char", "layout-grid-line", "layout-grid-mode", "layout-grid-type", "overflow-style", "overflow-x", "overflow-y", "scroll-chaining", "scroll-limit", "scroll-limit-x-max", "scroll-limit-x-min", "scroll-limit-y-max", "scroll-limit-y-min", "scroll-rails", "scroll-snap-x", "scroll-snap-y", "scroll-translation", "scrollbar-3dlight-color", "scrollbar-arrow-color", "scrollbar-base-color", "scrollbar-darkshadow-color", "scrollbar-face-color", "scrollbar-highlight-color", "scrollbar-shadow-color", "scrollbar-track-color", "text-autospace", "text-combine-horizontal", "text-kashida-space", "text-overflow", "touch-action", "touch-select", "word-break", "word-wrap", "wrap-flow", "wrap-margin", "wrap-through", "zoom"]
 
             static TEXT_ELEMENT = "text";
 
