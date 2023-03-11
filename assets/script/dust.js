@@ -2199,7 +2199,7 @@ const Dust = (() => {
             const newpath = "/views/" + path.replaceAll(".", "/") + ".dust.html";
             if (!Preset.MEMORY[path]) {
                 const r = await fetch(newpath);
-                Preset.MEMORY[path] = r.status === 200 ? (await r.text()) : "";
+                Preset.MEMORY[path] = r.status === 200 ? this.__clean(await r.text()) : "";
             }
             return Preset.MEMORY[path];
         }
@@ -2217,7 +2217,7 @@ const Dust = (() => {
             });
             for (var match of matches) {
                 var _code = await this.__fetch(match.path);
-                code = code.replace(match.hold, this.__clean(_code));
+                code = code.replace(match.hold, _code);
                 code = await this.__include(code);
             }
             return code;
