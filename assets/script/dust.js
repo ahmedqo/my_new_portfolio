@@ -2196,10 +2196,9 @@ const Dust = (() => {
         }
 
         async __fetch(path) {
-            path = path.startsWith("/") ? path.slice(1) : path;
-            path = "/views/" + path.replaceAll(".", "/") + ".dust.html";
+            const newpath = "/views/" + path.replaceAll(".", "/") + ".dust.html";
             if (!Preset.MEMORY[path]) {
-                const r = await fetch(path);
+                const r = await fetch(newpath);
                 Preset.MEMORY[path] = r.status === 200 ? (await r.text()) : "";
             }
             return Preset.MEMORY[path];
